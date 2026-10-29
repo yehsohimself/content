@@ -1,0 +1,15 @@
+.venv*/
+__pycache__/
+*.pyc
+.DS_Store
+*.log
+.pytest_cache/
+# your own data stays on your Mac: downloaded videos, results, corrections, settings
+content/
+kayitlar/
+ayarlar.json
+.onbellek/
+
+# kesilen depo: örnek medya ve ekran görüntüsü depoya girer (monorepo'da *.mp4/*.jpg dışarıdaydı)
+!static/*_ornek/*.mp4
+!docs/ekran.jpg

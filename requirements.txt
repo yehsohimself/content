@@ -1,0 +1,10 @@
+yt-dlp[default,curl-cffi]
+flask
+requests
+pillow
+mlx-whisper
+scenedetect==0.7.2
+opencv-python-headless
+pyobjc-framework-Vision
+pyobjc-framework-Quartz
+pytest

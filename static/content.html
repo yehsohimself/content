@@ -1,0 +1,616 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Content</title>
+<link rel="icon" href="/static/logo/content.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap">
+<style>
+/* Content (2026-10-29, sade sürüm): link → ne istediğiniz → adım adım rehber. Tek akış, tek birincil düğme, teknik dil yok. */
+:root{
+  --bg:#08080a; --yuzey:#111114; --yuzey2:#1a1a1f; --cizgi:rgba(255,255,255,.1); --cizgi2:rgba(255,255,255,.2);
+  --ink:#f2f2f4; --ink2:#a8a8b0; --ink3:#73737c; --vurgu:#F2C230; --vurgu-ink:#141414; --vurgu-rgb:242,194,48;
+  --yesil:#34c77b; --turuncu:#ff9f43; --kirmizi:#ff5d5d; --r:18px;
+}
+:root[data-theme="light"]{
+  --bg:#f6f6f3; --yuzey:#ffffff; --yuzey2:#f0f0ec; --cizgi:rgba(0,0,0,.09); --cizgi2:rgba(0,0,0,.18);
+  --ink:#1c1c1e; --ink2:#55555c; --ink3:#8a8a92; --vurgu:#E0AE12; --vurgu-rgb:224,174,18;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 Geist,-apple-system,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+body{min-height:100vh;background-image:radial-gradient(ellipse 70% 40% at 50% -10%,rgba(var(--vurgu-rgb),.13),transparent 70%);background-attachment:fixed}
+a{color:inherit}
+button{font:inherit;color:inherit;cursor:pointer}
+.hidden{display:none!important}
+.gri{color:var(--ink3)}
+/* üst çubuk ve ürün değiştirici (diğer ürünlerle aynı) */
+.nav{position:sticky;top:0;z-index:20;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;height:60px;padding:0 16px;padding-top:env(safe-area-inset-top);background:color-mix(in srgb,var(--bg) 82%,transparent);backdrop-filter:saturate(180%) blur(16px);border-bottom:1px solid var(--cizgi)}
+.markaGrup{grid-column:2;position:relative;display:flex;align-items:center;gap:2px}
+.brand{display:inline-flex;align-items:center;gap:9px;text-decoration:none;color:var(--ink);padding:6px 8px;border-radius:10px}
+.brand img{width:24px;height:24px;border-radius:6px;display:block}
+.brand .bt{font:600 15px/1 Geist,-apple-system,system-ui,sans-serif;letter-spacing:.18em;text-transform:uppercase}
+.urunbtn{width:26px;height:26px;border:0;border-radius:8px;background:transparent;color:var(--ink2);display:grid;place-items:center}
+.urunbtn:hover{background:var(--yuzey2);color:var(--ink)}
+.urunbtn svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.urunMenu{display:none;position:absolute;top:44px;left:50%;transform:translateX(-50%);background:var(--yuzey);border:1px solid var(--cizgi2);border-radius:16px;box-shadow:0 24px 60px -12px rgba(0,0,0,.55);padding:8px;z-index:40;min-width:200px}
+.urunMenu.acik{display:block}
+.urunMenu a{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:10px;color:var(--ink);font-weight:500;text-decoration:none}
+.urunMenu a:hover,.urunMenu a.on{background:var(--yuzey2)}
+.urunMenu img{width:22px;height:22px;border-radius:6px}
+.navsag{grid-column:3;justify-self:end}
+.navsag{display:flex;gap:6px}
+.tema{border:1px solid var(--cizgi);background:none;border-radius:99px;min-width:34px;height:34px;padding:0 8px;color:var(--ink2);font-size:12.5px;font-weight:600}
+.ayarsatir{display:flex;align-items:flex-start;gap:12px;padding:12px 0;border-top:1px solid var(--cizgi)}
+.ayarsatir:first-of-type{border-top:0}
+.ayarsatir div{flex:1}
+.ayarsatir b{display:block;font-size:15px}
+.ayarsatir small{display:block;color:var(--ink3);font-size:13.5px;margin-top:2px}
+.ayarsatir input[type=checkbox]{width:22px;height:22px;accent-color:var(--vurgu);margin-top:2px}
+.ayarsatir select{background:var(--yuzey2);color:var(--ink);border:1px solid var(--cizgi);border-radius:10px;padding:6px 8px;font:inherit}
+main{max-width:760px;margin:0 auto;padding:0 16px 120px}
+/* düğmeler */
+.btn{text-decoration:none;display:inline-block;border:1px solid var(--cizgi);border-radius:99px;padding:12px 20px;font-weight:600;font-size:15px;background:var(--yuzey2);color:var(--ink)}
+.btn:hover{border-color:var(--cizgi2)}
+.btn.ana{background:var(--vurgu);color:var(--vurgu-ink);border-color:transparent;box-shadow:0 10px 30px -10px rgba(var(--vurgu-rgb),.6)}
+.btn.ana:disabled{opacity:.35;box-shadow:none;cursor:not-allowed}
+.btn.buyuk{width:100%;padding:17px 20px;font-size:17px}
+.btn.kucuk{padding:7px 14px;font-size:14px}
+.metin{background:none;border:0;color:var(--vurgu);font-weight:600;padding:4px 2px;font-size:15px}
+:root[data-theme="light"] .metin{color:#9a7400}
+/* giriş */
+.hero{text-align:center;padding:56px 0 24px}
+.hero h1{font-size:clamp(40px,7vw,60px);line-height:1.02;letter-spacing:-.035em;margin:0 0 12px;font-weight:700}
+.hero p{color:var(--ink2);max-width:460px;margin:0 auto;font-size:17px}
+.kart{background:var(--yuzey);border:1px solid var(--cizgi);border-radius:var(--r);padding:20px}
+.adimno{display:flex;align-items:center;gap:12px;margin:0 0 12px;font-weight:600;font-size:17px}
+.adimno i{font-style:normal;flex:none;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:var(--vurgu);color:var(--vurgu-ink);font-size:14px;font-weight:700}
+.adimno small{font-weight:400;color:var(--ink3);font-size:14px}
+.sonuc-adim.kapali{opacity:.4;pointer-events:none}
+.sonuc-adim + .sonuc-adim{margin-top:22px;padding-top:22px;border-top:1px solid var(--cizgi)}
+.linkkutu{display:flex;gap:8px;align-items:center;background:var(--yuzey2);border:1px solid var(--cizgi);border-radius:14px;padding:6px 6px 6px 14px}
+.linkkutu:focus-within{border-color:var(--vurgu)}
+.linkkutu input{flex:1;min-width:0;border:0;background:transparent;color:var(--ink);font:inherit;font-size:17px;padding:10px 0;outline:none}
+.ipucu{font-size:14px;color:var(--ink3);margin:8px 2px 0}
+.ipucu.hata{color:var(--kirmizi)}
+.ipucu.ok{color:var(--yesil)}
+.soru{font-size:14px;color:var(--ink2);margin:14px 0 8px}
+.secimler{display:flex;flex-wrap:wrap;gap:8px}
+.secim{border:1px solid var(--cizgi2);background:none;border-radius:99px;padding:10px 16px;font-size:15px;color:var(--ink)}
+.secim[aria-pressed=true]{background:var(--vurgu);border-color:transparent;color:var(--vurgu-ink);font-weight:600}
+.secim[aria-pressed=true]::before{content:'✓ '}
+textarea.serbest{width:100%;margin-top:14px;border:1px solid var(--cizgi);background:var(--yuzey2);color:var(--ink);border-radius:14px;padding:12px 14px;font:inherit;font-size:16px;min-height:76px;resize:vertical;outline:none}
+textarea.serbest:focus{border-color:var(--vurgu)}
+.gonder{margin-top:18px}
+.gonder .ipucu{text-align:center}
+/* geçmiş */
+.bas2{display:flex;align-items:baseline;justify-content:space-between;margin:44px 0 12px}
+.bas2 h2{margin:0;font-size:20px;letter-spacing:-.01em}
+.gecmis{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}
+.gkart{display:flex;gap:12px;align-items:center;text-decoration:none;background:var(--yuzey);border:1px solid var(--cizgi);border-radius:14px;padding:10px}
+.gkart:hover{border-color:var(--cizgi2)}
+.gkart .k{width:54px;height:72px;flex:none;border-radius:9px;background:var(--yuzey2) center/cover}
+.gkart b{display:block;font-size:14.5px;line-height:1.3}
+.gkart small{display:block;color:var(--ink3);font-size:13px;margin-top:3px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.nokta{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--vurgu);margin-right:5px;vertical-align:1px;animation:nabiz 1.4s infinite}
+.nokta.hata{background:var(--kirmizi);animation:none}
+@keyframes nabiz{50%{opacity:.3}}
+/* iş sayfası */
+.geri{display:inline-block;margin:20px 0 4px;color:var(--ink2);text-decoration:none;font-size:15px}
+.ust{display:grid;grid-template-columns:auto 1fr;gap:24px;align-items:start;margin-top:12px}
+.video{width:200px;aspect-ratio:9/16;border-radius:16px;background:var(--yuzey2) center/cover;border:1px solid var(--cizgi);overflow:hidden}
+.video.yatay{width:320px;aspect-ratio:16/9}
+.video video{width:100%;height:100%;object-fit:contain;background:#000;display:block}
+.etk{font-size:14px;color:var(--ink3);margin:0 0 4px}
+h1.sonuc{font-size:clamp(28px,4.6vw,38px);line-height:1.1;letter-spacing:-.02em;margin:0 0 10px}
+.guven{display:inline-flex;align-items:center;gap:6px;font-size:13.5px;font-weight:600;padding:4px 11px;border-radius:99px;background:var(--yuzey2);border:1px solid var(--cizgi);margin-bottom:12px}
+.guven i{width:8px;height:8px;border-radius:50%;background:var(--yesil)}
+.guven.orta i{background:var(--vurgu)} .guven.dusuk i{background:var(--turuncu)}
+.ozet{font-size:16.5px;color:var(--ink);margin:0}
+.istekiniz{font-size:14px;color:var(--ink3);margin:12px 0 0}
+.bolum{margin-top:36px}
+.bolum > h2{font-size:21px;letter-spacing:-.01em;margin:0 0 4px}
+.bolum > p.alt{color:var(--ink3);margin:0 0 14px;font-size:15px}
+.gerek{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px}
+.gerek .kart{padding:14px 16px}
+.gerek b{display:block;font-size:16px}
+.gerek p{margin:4px 0 0;font-size:14.5px;color:var(--ink2)}
+.etiket{display:inline-block;font-size:12.5px;font-weight:600;padding:2px 9px;border-radius:99px;background:var(--yuzey2);color:var(--ink2);margin-top:8px;margin-right:4px}
+.etiket.ucret{color:var(--turuncu)} .etiket.bedava{color:var(--yesil)}
+.gerek .kart.vurgulu{border-color:rgba(var(--vurgu-rgb),.6)}
+.gerek .kart a.btn{display:inline-block;margin-top:10px;text-decoration:none}
+.ilerleme{display:flex;align-items:center;gap:12px;margin:0 0 14px}
+.ilerleme .cubuk{flex:1;height:8px;border-radius:99px;background:var(--yuzey2);overflow:hidden}
+.ilerleme .cubuk span{display:block;height:100%;background:var(--yesil);border-radius:99px;transition:width .3s}
+.ilerleme b{font-size:14px;color:var(--ink2);font-weight:600;white-space:nowrap}
+.adimlar{display:flex;flex-direction:column;gap:10px}
+.adim{display:grid;grid-template-columns:44px 1fr;gap:14px;background:var(--yuzey);border:1px solid var(--cizgi);border-radius:var(--r);padding:16px}
+.adim.simdi{border-color:var(--vurgu);box-shadow:0 0 0 3px rgba(var(--vurgu-rgb),.15)}
+.adim.bitti{opacity:.6;padding:12px 16px;align-items:center}
+.adim.bitti .ne,.adim.bitti .ip,.adim.bitti .yer,.adim.bitti .emin{display:none}
+.adim.bitti h3{margin:0;text-decoration:line-through;text-decoration-color:var(--ink3)}
+.adim .tik{width:44px;height:44px;border-radius:50%;border:2px solid var(--cizgi2);background:none;display:grid;place-items:center;font-weight:700;font-size:16px;color:var(--ink2)}
+.adim.simdi .tik{border-color:var(--vurgu);color:var(--vurgu)}
+.adim.bitti .tik{background:var(--yesil);border-color:var(--yesil);color:#fff}
+.adim h3{margin:2px 0 2px;font-size:17px;line-height:1.3}
+.adim .yer{font-size:13.5px;color:var(--ink3)}
+.adim .ne{margin:6px 0 0;font-size:16px}
+.adim .ip{margin:8px 0 0;font-size:14.5px;color:var(--ink2);background:var(--yuzey2);border-radius:10px;padding:8px 11px}
+.adim .emin{margin:8px 0 0;font-size:14px;color:var(--turuncu)}
+.adim .simdirozet{display:inline-block;font-size:12px;font-weight:700;color:var(--vurgu-ink);background:var(--vurgu);border-radius:99px;padding:1px 8px;margin-bottom:4px}
+ul.duz{margin:0;padding-left:20px} ul.duz li{margin:6px 0}
+.farkli .secimler{margin-top:2px}
+.farkli .satir{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.farkli input{flex:1 1 220px;min-width:0;border:1px solid var(--cizgi);background:var(--yuzey2);color:var(--ink);border-radius:99px;padding:11px 16px;font:inherit;font-size:15.5px;outline:none}
+.farkli input:focus{border-color:var(--vurgu)}
+details.ayrinti{margin-top:36px;border-top:1px solid var(--cizgi);padding-top:16px}
+details.ayrinti summary{cursor:pointer;font-weight:600;color:var(--ink2);list-style:none}
+details.ayrinti summary::-webkit-details-marker{display:none}
+details.ayrinti summary::after{content:' ›';display:inline-block;transition:transform .2s}
+details.ayrinti[open] summary::after{transform:rotate(90deg)}
+details.ayrinti h4{margin:18px 0 6px;font-size:15px}
+details.ayrinti ul{margin:0;padding-left:20px;color:var(--ink2);font-size:14.5px}
+details.ayrinti li{margin:4px 0}
+.altlar{display:flex;flex-wrap:wrap;gap:10px;margin-top:32px;align-items:center}
+.altlar .sag{margin-left:auto}
+/* bekleme */
+.bekleme h1{font-size:clamp(26px,4.4vw,34px);letter-spacing:-.02em;margin:0 0 6px}
+.asamalar{list-style:none;margin:18px 0 0;padding:0}
+.asamalar li{display:flex;align-items:center;gap:12px;padding:9px 0;font-size:16px;color:var(--ink3)}
+.asamalar li i{width:24px;height:24px;flex:none;border-radius:50%;border:2px solid var(--cizgi2);display:grid;place-items:center;font-style:normal;font-size:13px}
+.asamalar li.bitti{color:var(--ink2)} .asamalar li.bitti i{background:var(--yesil);border-color:var(--yesil);color:#fff}
+.asamalar li.simdi{color:var(--ink);font-weight:600} .asamalar li.simdi i{border-color:var(--vurgu);border-top-color:transparent;animation:don 1s linear infinite}
+@keyframes don{to{transform:rotate(360deg)}}
+.hatakart{border-color:rgba(255,93,93,.5)}
+.kart.dogru{margin-top:20px;padding:16px 18px}
+.kart.dogru p{margin:0;font-size:15px;color:var(--ink2)}
+.kart.dogru p b{color:var(--ink)}
+.kart.dogru .dsoru{margin-bottom:12px}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:12px 18px;border-radius:99px;font-size:15px;z-index:60;display:flex;gap:12px;align-items:center;box-shadow:0 10px 30px rgba(0,0,0,.4)}
+.toast button{background:none;border:0;color:var(--vurgu);font-weight:700;padding:0}
+:root[data-theme="light"] .toast button{color:#9a7400}
+.perde{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:50;display:grid;place-items:center;padding:16px}
+.pencere{background:var(--yuzey);border:1px solid var(--cizgi2);border-radius:20px;padding:22px;max-width:520px;width:100%}
+.pencere h4{margin:0 0 8px;font-size:19px}
+.pencere p{margin:0 0 12px;color:var(--ink2)}
+.pencere code{display:block;white-space:pre-wrap;background:var(--yuzey2);border-radius:12px;padding:12px;font-size:14px;margin-bottom:14px}
+.pencere .alt{display:flex;gap:10px;justify-content:flex-end}
+@media (max-width:420px){.nav{padding:0 10px}.brand .bt{letter-spacing:.1em;font-size:13px}.navsag{gap:4px}.tema{min-width:30px;height:30px;padding:0 6px}#tema{display:none}}
+@media (max-width:620px){
+  .hero{padding-top:36px}
+  .ust{grid-template-columns:1fr;gap:16px}
+  .ust .video{width:190px;margin:0 auto}
+  .ust .video.yatay{width:100%}
+  .kart{padding:16px}
+  .altlar .sag{margin-left:0}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<nav class="nav">
+  <div class="markaGrup"><a class="brand" href="#"><img src="/static/logo/content.svg" alt=""><span class="bt">Content</span></a><button type="button" class="urunbtn" id="urunBtn" aria-label="Diğer ürünler" title="Diğer ürünler"><svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5"/></svg></button><div class="urunMenu" id="urunMenu"></div></div>
+  <div class="navsag"><button class="tema" id="dilBtn" title="Türkçe / English" aria-label="Dil">EN</button><button class="tema" id="ayarBtn" title="Ayarlar" aria-label="Ayarlar">⚙︎</button><button class="tema" id="tema" title="Açık ya da koyu görünüm" aria-label="Görünüm">◐</button></div>
+</nav>
+<main>
+  <section id="ana">
+    <div class="hero">
+      <h1>Content</h1>
+      <p>Bir video linki yapıştırın. Nasıl yapıldığını bulup size adım adım anlatayım.</p>
+    </div>
+    <form class="kart" id="form" autocomplete="off" novalidate>
+      <div class="sonuc-adim">
+        <div class="adimno"><i>1</i>Videonun linki</div>
+        <div class="linkkutu"><input id="link" type="url" inputmode="url" placeholder="Linki buraya yapıştırın"><button type="button" class="btn kucuk" id="yapistir">Yapıştır</button></div>
+        <p class="ipucu" id="linkNot">TikTok, Instagram, YouTube ya da X’ten bir video.</p>
+      </div>
+      <div class="sonuc-adim kapali" id="adim2">
+        <div class="adimno"><i>2</i>Ne istiyorsunuz? <small>isteğe bağlı</small></div>
+        <p class="soru">Nerede yapacaksınız?</p>
+        <div class="secimler" data-grup="yer" data-tek="1">
+          <button type="button" class="secim" data-v="Telefonda yapacağım" aria-pressed="false">Telefonda</button>
+          <button type="button" class="secim" data-v="Bilgisayarda yapacağım" aria-pressed="false">Bilgisayarda</button>
+        </div>
+        <p class="soru">Nasıl bir şey istiyorsunuz?</p>
+        <div class="secimler" data-grup="nasil">
+          <button type="button" class="secim" data-v="Aynısını yapmak istiyorum" aria-pressed="false">Aynısını</button>
+          <button type="button" class="secim" data-v="Kendi fotoğrafımla yapmak istiyorum" aria-pressed="false">Kendi fotoğrafımla</button>
+          <button type="button" class="secim" data-v="Kendi videomla yapmak istiyorum" aria-pressed="false">Kendi videomla</button>
+          <button type="button" class="secim" data-v="Markam için uyarlayacağım" aria-pressed="false">Markam için</button>
+          <button type="button" class="secim" data-v="Yalnız ücretsiz araçlarla" aria-pressed="false">Ücretsiz araçlarla</button>
+        </div>
+        <textarea class="serbest" id="istek" placeholder="Başka eklemek istediğiniz bir şey var mı? Örn. “Kedimin fotoğrafıyla yapmak istiyorum”"></textarea>
+      </div>
+      <div class="gonder">
+        <button class="btn ana buyuk" id="coz" type="submit" disabled>Nasıl yapıldığını göster</button>
+        <p class="ipucu">Yaklaşık 5 dakika sürer.</p>
+      </div>
+    </form>
+    <div id="gecmisBolum" class="hidden">
+      <div class="bas2"><h2>Önceki videolarınız</h2><button class="metin hidden" id="hepsi" type="button">Tümünü göster</button></div>
+      <div class="gecmis" id="gecmis"></div>
+    </div>
+  </section>
+  <section id="isSayfa" class="hidden"></section>
+</main>
+<script>
+/* Dil (2026-10-29): Türkçe kaynak metinler sözlükle İngilizceye çevrilir; rehberin kendisi sunucuda seçilen dilde yazılır. Seçim: localStorage
+   content_dil → yoksa tarayıcı dili (tr değilse en). Yeni bir arayüz metni eklerken EN'e de ekleyin. */
+const EN = {
+  'Bir video linki yapıştırın. Nasıl yapıldığını bulup size adım adım anlatayım.': 'Paste a video link. I will find out how it was made and walk you through it step by step.',
+  'Videonun linki': 'Video link', 'Linki buraya yapıştırın': 'Paste the link here', 'Yapıştır': 'Paste',
+  'TikTok, Instagram, YouTube ya da X’ten bir video.': 'A video from TikTok, Instagram, YouTube or X.',
+  'Ne istiyorsunuz?': 'What do you want?', 'isteğe bağlı': 'optional', 'Nerede yapacaksınız?': 'Where will you make it?',
+  'Telefonda': 'On my phone', 'Bilgisayarda': 'On my computer', 'Nasıl bir şey istiyorsunuz?': 'What kind of result?',
+  'Aynısını': 'The same thing', 'Kendi fotoğrafımla': 'With my own photo', 'Kendi videomla': 'With my own video', 'Markam için': 'For my brand',
+  'Ücretsiz araçlarla': 'Free tools only', 'Daha kolay bir yol': 'An easier way',
+  'Telefonda yapacağım': 'I will make it on my phone', 'Bilgisayarda yapacağım': 'I will make it on my computer', 'Aynısını yapmak istiyorum': 'I want to make the same thing',
+  'Kendi fotoğrafımla yapmak istiyorum': 'I want to make it with my own photo', 'Kendi videomla yapmak istiyorum': 'I want to make it with my own video',
+  'Markam için uyarlayacağım': 'I will adapt it for my brand', 'Yalnız ücretsiz araçlarla': 'Free tools only',
+  'Başka eklemek istediğiniz bir şey var mı? Örn. “Kedimin fotoğrafıyla yapmak istiyorum”': 'Anything else? E.g. “I want to do it with a photo of my cat”',
+  'Nasıl yapıldığını göster': 'Show me how it was made', 'Yaklaşık 5 dakika sürer.': 'Takes about 5 minutes.', 'Başlıyor…': 'Starting…',
+  'Önceki videolarınız': 'Your earlier videos', 'Tümünü göster': 'Show all', 'İnceleniyor': 'Analysing', 'Çözülemedi': 'Could not be solved',
+  'Henüz incelenmedi': 'Not analysed yet', 'Diğer ürünler': 'Other products', 'Açık ya da koyu görünüm': 'Light or dark', 'Görünüm': 'Appearance',
+  'Ayarlar': 'Settings', 'Dil': 'Language',
+  'Bu bir link gibi görünmüyor. “https://” ile başlamalı.': 'This does not look like a link. It should start with “https://”.',
+  'Panoda bir şey yok. Önce videonun linkini kopyalayın.': 'The clipboard is empty. Copy the video link first.',
+  'Linki kutuya basılı tutup “Yapıştır”ı seçin.': 'Press and hold in the box and choose “Paste”.',
+  'Kopyalandı.': 'Copied.', 'Kopyalanamadı.': 'Could not copy.', 'Bir sorun oldu. Biraz sonra yeniden deneyin.': 'Something went wrong. Try again in a moment.',
+  'CapCut şablonuyla yapılmış': 'Made with a CapCut template', 'CapCut’ta elle kurgulanmış': 'Edited by hand in CapCut', 'Yapay zekâyla yapılmış': 'Made with AI',
+  'Çekilip kurgulanmış': 'Filmed and edited', 'Ekran kaydıyla yapılmış': 'Made with a screen recording', 'Birkaç yöntem birlikte kullanılmış': 'Several methods combined',
+  'Eminim': 'Certain', 'Büyük olasılıkla': 'Very likely', 'Tahminim': 'Best guess', 'Düzeltmenize göre': 'Based on your correction',
+  'Video indiriliyor': 'Downloading the video', 'Video indirildi': 'Video downloaded', 'Video izleniyor': 'Watching the video', 'Video izlendi': 'Video watched',
+  'Müzik ve ipuçları aranıyor': 'Looking for the music and clues', 'Müzik ve ipuçları toplandı': 'Music and clues collected',
+  'Benzer öğretici videolar inceleniyor': 'Reading tutorials for similar videos', 'Benzer öğretici videolar incelendi': 'Tutorials read',
+  'Adımlar yazılıyor': 'Writing the steps', 'Adımlar yazıldı': 'Steps written',
+  '‹ Yeni video': '‹ New video', 'Yeni video': 'New video', 'Biraz bekleyin': 'Hang on', 'Videoyu inceliyorum': 'Analysing the video',
+  'Yaklaşık 5 dakika sürer. Bu sayfayı kapatabilirsiniz; hazır olunca bildirim gelir.': 'Takes about 5 minutes. You can close this page; you will get a notification when it is ready.',
+  'Bu videoyu çözemedim': 'I could not work this video out', 'İnceleme yarıda kaldı.': 'The analysis stopped halfway.',
+  'Video gizli ya da silinmiş olabilir. Linkin herkese açık bir videoya ait olduğundan emin olun.': 'The video may be private or deleted. Make sure the link is to a public video.',
+  'Tekrar dene': 'Try again', 'Başka video': 'Another video', 'Bu video için rehber yok': 'No guide for this video yet',
+  'Eski bir sürümle incelenmiş. Şimdi baştan inceleyebilirim.': 'It was analysed by an older version. I can analyse it again now.', 'Şimdi incele': 'Analyse now',
+  'Rehberi kopyala': 'Copy the guide', 'Sil': 'Delete', 'Bu video bulunamadı. Silinmiş olabilir.': 'This video was not found. It may have been deleted.',
+  'Bu video': 'This video', 'Nasıl yapıldığı': 'How it was made',
+  'Bu rehber sizin düzeltmenize göre yeniden hazırlandı.': 'This guide was rewritten based on your correction.',
+  'Kesin kanıt bulamadım; en olası yolu yazdım.': 'I found no hard evidence; this is the most likely way.',
+  'Güçlü ipuçları var ama kesin kanıt yok.': 'There are strong clues but no hard evidence.',
+  'Videonun sayfasında ya da sahibinin açıklamasında kanıt var.': 'The video page or the creator’s own description proves it.',
+  'Size gerekenler': 'What you need', 'Başlamadan önce bunları hazırlayın.': 'Get these ready before you start.', 'Şablon': 'Template',
+  'Hazır bir şablon kullanılmış.': 'A ready-made template was used.', 'Şablonu aç ↗': 'Open the template ↗', 'Tahmin': 'Guess',
+  'Bu aracın kullanıldığına dair kesin kanıt yok; benzer işi yapan bir araç da olabilir.': 'No hard evidence this exact tool was used; a similar tool could have done it.',
+  'Orijinal görüntü': 'Original footage', 'İzle ↗': 'Watch ↗', 'Adım adım': 'Step by step', 'Sırayla uygulayın.': 'Follow them in order.',
+  'Bitirdiğiniz adımın numarasına dokunun.': 'Tap the number of a step when you finish it.', 'Kolay': 'Easy', 'Orta zorlukta': 'Medium', 'Zor': 'Hard',
+  'Bitti 🎉': 'Done 🎉', 'Yapılmadı olarak işaretle': 'Mark as not done', 'Yaptım': 'Done', 'Sıradaki': 'Next',
+  'Bu düğmenin adı ekranınızda biraz farklı olabilir; benzerini arayın.': 'This button may be named a little differently on your screen; look for something similar.',
+  'Takılırsanız': 'If you get stuck', 'En sık yapılan hatalar.': 'The most common mistakes.',
+  'Uğraşmak istemiyor musunuz?': 'Rather not do it yourself?', 'Bu adımları bilgisayarınızda Claude sizin yerinize uygulayabilir.': 'Claude can carry out these steps on your computer.',
+  'Claude uygulamasında yeni bir sohbet açın ve hazırladığım isteği yapıştırın. Giriş, ödeme ya da telefonda yapılması gereken bir adıma gelince durup size sorar.': 'Open a new chat in the Claude app and paste the prompt I prepared. Claude stops and asks you at any step that needs a login, a payment or your phone.',
+  'İsteği kopyala': 'Copy the prompt', 'Farklı yapmak ister misiniz?': 'Want to do it differently?', 'Seçin ya da yazın; rehberi size göre yeniden hazırlarım.': 'Pick or type; I will rewrite the guide for you.',
+  'Örn. Kendi kedimle yapmak istiyorum': 'E.g. I want to do it with my cat', 'Yeniden hazırla': 'Rewrite the guide',
+  'Neden böyle düşünüyorum': 'Why I think so', 'Emin olmadıklarım': 'What I am not sure about', 'Videoda sahne sahne ne oluyor': 'What happens in the video, scene by scene',
+  'Baktığım kaynaklar': 'Sources I checked', 'Baktım, bulamadım': 'Looked for, not found', 'Nasıl karar verdim': 'How I decided',
+  '✓ Doğru dediniz. Teşekkürler; bu video bundan sonra Content’in doğruluğunu ölçmekte kullanılacak.': '✓ You said this is right. Thanks; this video will now be used to measure how accurate Content is.',
+  'Şimdi doğru mu?': 'Is it right now?', 'Doğru bulmuş muyum?': 'Did I get it right?', 'Bildiğiniz bir video ise söyleyin; Content her düzeltmeden öğrenir.': 'If you know this video, tell me; Content learns from every correction.',
+  'Doğru': 'Right', 'Kısmen': 'Partly', 'Yanlış': 'Wrong',
+  'Aslında nasıl yapılmıştı? Bildiğiniz kadarını yazın. Örn. “Bir filmden sahne alınmış, sesi aynı, yalnız yüzler değiştirilmiş.”': 'How was it really made? Write what you know. E.g. “A scene from a film, same audio, only the faces were swapped.”',
+  'Düzelt ve yeniden hazırla': 'Correct it and rewrite', 'Teşekkürler.': 'Thank you.', 'Rehber kopyalandı.': 'Guide copied.',
+  'İstek kopyalandı. Claude uygulamasına yapıştırın.': 'Prompt copied. Paste it into the Claude app.', 'Videonun aslında nasıl yapıldığını kısaca yazın.': 'Briefly write how the video was really made.',
+  'Önce bir seçenek seçin ya da ne istediğinizi yazın.': 'Pick an option or type what you want first.', 'Silindi.': 'Deleted.', 'Geri al': 'Undo',
+  'Geçerli, herkese açık bir video linki yapıştırın.': 'Paste a valid link to a public video.', 'Geçersiz istek.': 'Invalid request.',
+  'Bu gönderide video yok; bir fotoğraf ya da fotoğraf dizisi olabilir. Bir video linki yapıştırın.': 'There is no video in this post; it may be a photo or a carousel. Paste a video link.',
+  'Bu video gizli ya da yalnız giriş yapanlara açık; indirilemedi. Ayarlar\'dan tarayıcı oturumunu açıp yeniden deneyin.': 'This video is private or needs a login, so it could not be downloaded. Turn on your browser session in Settings and try again.',
+  'Bu video gizli ya da yalnız giriş yapanlara açık; indirilemedi.': 'This video is private or needs a login, so it could not be downloaded.',
+  'Bu video kaldırılmış ya da artık açılmıyor.': 'This video was removed or no longer opens.', 'Video indirilemedi. Linkin herkese açık bir videoya ait olduğundan emin olun.': 'The video could not be downloaded. Make sure the link is to a public video.',
+  'Bu link açılamıyor. Herkese açık bir video linki yapıştırın.': 'This link cannot be opened. Paste a link to a public video.',
+  'Video çözümlenemedi (yanıt okunamadı).': 'The video could not be analysed (no readable answer).', 'Yapılış yöntemi çıkarılamadı (yanıt okunamadı).': 'The method could not be worked out (no readable answer).',
+  'Bu video şu an inceleniyor.': 'This video is being analysed right now.', 'Bu video şu an inceleniyor; bitince silebilirsiniz.': 'This video is being analysed; you can delete it when it finishes.',
+  'Bu video şu an inceleniyor; bitince yeniden deneyin.': 'This video is being analysed; try again when it finishes.',
+  'Videoyu inceleyen yazar': 'Who writes the guide', 'Kapat': 'Close',
+  'TikTok yorumlarını oku': 'Read TikTok comments', 'İzleyicilerin “hangi uygulama?” sorularına ve video sahibinin cevaplarına bakar. Zayıf bir kanıttır; TikTok\'un belgelenmemiş sayfa verisini kullanır.': 'Looks at viewers asking “which app?” and the creator’s replies. Weak evidence; uses TikTok’s undocumented page data.',
+  'Şarkıyı sesten tanı (Shazam)': 'Recognise the song (Shazam)', 'Videonun ses parmak izi Shazam\'a gönderilir. Akımı şarkısından bulmaya yardım eder.': 'An audio fingerprint of the video is sent to Shazam. Helps find the trend from its song.',
+  'Kurulu değil: ./kurulum.sh --shazam': 'Not installed: ./kurulum.sh --shazam',
+  'Tarayıcı oturumu': 'Browser session', 'Giriş isteyen videolar için tarayıcınızdaki oturum kullanılır. Kapalıyken yalnız herkese açık videolar iner.': 'For videos that need a login, your browser’s session is used. When off, only public videos download.',
+  'Kapalı': 'Off', 'Güncel yapay zekâ araçları listesi': 'Current AI tools list', 'Rehberde araçların güncel adlarını yazmak için günde bir kez api.sunra.ai\'den herkese açık model listesi alınır.': 'Once a day a public list of model names is fetched from api.sunra.ai, so guides use current tool names.',
+  'Kaydedildi.': 'Saved.',
+  'Platform sayfasında şablon ya da araç bağlantısı yok': 'No template or tool link on the platform page',
+  'Platformda ve dosyada yapay zekâ etiketi yok (bu, yapay zekâ kullanılmadığını göstermez)': 'No AI label on the platform or in the file (this does not prove no AI was used)',
+  'Aynı akımı anlatan öğretici video bulunamadı': 'No tutorial for the same trend was found', 'Web\'de bu akımı anlatan bir sayfa bulunamadı': 'No web page describing this trend was found',
+  'Size gerekenler: ': 'What you need: ', 'Ücretsiz': 'Free', 'Ücretli': 'Paid', 'Bir kısmı ücretli': 'Partly paid'
+};
+const EN_KALIP = [[/^✓ (.+) videosu$/, '✓ $1 video'], [/^(\d+) \/ (\d+) adım$/, '$1 / $2 steps'], [/^İsteğiniz: ([\s\S]*)$/, 'You asked: $1'],
+  [/^Düzeltmeniz: ([\s\S]*)$/, 'Your correction: $1'], [/^Örneğin ([\s\S]*)$/, 'For example $1'], [/^“(.*)” aramasını kopyala$/, 'Copy the search “$1”'],
+  [/^Şablon: ([\s\S]*)$/, 'Template: $1'], [/^Diskte ([\d.,]+) GB boş yer kaldı.*$/, 'Only $1 GB of disk space left; the video was not downloaded. Free up a few GB and try again.']];
+const DIL = (() => { const s = (() => { try{ return localStorage.getItem('content_dil'); }catch(e){ return null; } })();
+  return s === 'tr' || s === 'en' ? s : ((navigator.language || 'tr').toLowerCase().startsWith('tr') ? 'tr' : 'en'); })();
+document.documentElement.lang = DIL;
+function t(x){
+  if (DIL === 'tr' || x == null) return x;
+  const m = String(x).match(/^(\s*)([\s\S]*?)(\s*)$/), ic = m[2];
+  if (!ic) return x;
+  if (EN[ic] !== undefined) return m[1] + EN[ic] + m[3];
+  for (const [rx, k] of EN_KALIP){ if (rx.test(ic)) return m[1] + ic.replace(rx, k) + m[3]; }
+  if (ic.includes(' · ')){ const p = ic.split(' · '), c = p.map(z => t(z)); if (c.some((z, i) => z !== p[i])) return m[1] + c.join(' · ') + m[3]; }
+  return x;
+}
+const OZ = ['placeholder', 'title', 'aria-label'];
+function cevirDugum(n){
+  if (DIL === 'tr') return;
+  if (n.nodeType === 3){ if (n.parentNode && !['SCRIPT', 'STYLE', 'TEXTAREA'].includes(n.parentNode.nodeName)){ const y = t(n.nodeValue); if (y !== n.nodeValue) n.nodeValue = y; } return; }
+  if (n.nodeType !== 1 || n.nodeName === 'SCRIPT' || n.nodeName === 'STYLE') return;
+  for (const a of OZ) if (n.hasAttribute(a)){ const v = n.getAttribute(a), y = t(v); if (y !== v) n.setAttribute(a, y); }
+  for (const c of Array.from(n.childNodes)) cevirDugum(c);
+}
+if (DIL !== 'tr'){
+  document.addEventListener('DOMContentLoaded', () => cevirDugum(document.body));
+  new MutationObserver(ms => { for (const m of ms){ if (m.type === 'characterData') cevirDugum(m.target); else if (m.type === 'attributes') cevirDugum(m.target); else m.addedNodes.forEach(cevirDugum); } })
+    .observe(document.documentElement, {childList: true, subtree: true, characterData: true, attributes: true, attributeFilter: OZ});
+}
+const $ = (s, k = document) => k.querySelector(s), $$ = (s, k = document) => [...k.querySelectorAll(s)];
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]));
+const store = {get(k, v){ try{ const x = localStorage.getItem(k); return x === null ? v : x; }catch(e){ return v; } }, set(k, v){ try{ localStorage.setItem(k, v); }catch(e){} }};
+function toast(m, eylem, fn){
+  $$('.toast').forEach(x => x.remove());
+  const el = document.createElement('div'); el.className = 'toast'; el.innerHTML = `<span>${esc(m)}</span>${eylem ? `<button>${esc(eylem)}</button>` : ''}`;
+  document.body.appendChild(el); if (eylem) el.querySelector('button').onclick = () => { el.remove(); fn(); };
+  setTimeout(() => el.remove(), eylem ? 6000 : 3200);
+}
+async function api(yol, secenek = {}){
+  const r = await fetch(yol, secenek); let j = {}; try{ j = await r.json(); }catch(e){}
+  if (!r.ok) throw new Error(j.hata || 'Bir sorun oldu. Biraz sonra yeniden deneyin.');
+  return j;
+}
+const json = v => ({method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(v)});
+const kopyala = async (metin, not = 'Kopyalandı.') => { try{ await navigator.clipboard.writeText(metin); toast(not); }catch(e){ toast('Kopyalanamadı.'); } };
+
+/* tema ve ürün değiştirici */
+function temaUygula(){ if (store.get('tema_v20', 'dark') === 'light') document.documentElement.dataset.theme = 'light'; else delete document.documentElement.dataset.theme; }
+temaUygula(); $('#tema').onclick = () => { store.set('tema_v20', store.get('tema_v20', 'dark') === 'light' ? 'dark' : 'light'); temaUygula(); };
+/* dil düğmesi: TR ↔ EN (sunucuya da yazılır; bildirimler ve yeni rehberler o dilde) */
+$('#dilBtn').textContent = DIL === 'tr' ? 'EN' : 'TR';
+$('#dilBtn').onclick = async () => { const yeni = DIL === 'tr' ? 'en' : 'tr'; store.set('content_dil', yeni);
+  try{ await api('/api/content/ayar', json({dil: yeni})); }catch(e){} location.reload(); };
+/* ayarlar: varsayılan kapalı olanlar (TikTok yorumları, Shazam, tarayıcı oturumu) ve model listesi */
+$('#ayarBtn').onclick = async () => {
+  let a; try{ a = await api('/api/content/ayar'); }catch(e){ toast(e.message); return; }
+  const p = document.createElement('div'); p.className = 'perde';
+  const satir = (k, ad, alt, ek = '') => `<label class="ayarsatir"><div><b>${ad}</b><small>${alt}</small>${ek}</div><input type="checkbox" data-k="${k}" ${a[k] ? 'checked' : ''}></label>`;
+  p.innerHTML = `<div class="pencere"><h4>Ayarlar</h4>
+    ${satir('yorumlar', 'TikTok yorumlarını oku', 'İzleyicilerin “hangi uygulama?” sorularına ve video sahibinin cevaplarına bakar. Zayıf bir kanıttır; TikTok\'un belgelenmemiş sayfa verisini kullanır.')}
+    ${satir('shazam', 'Şarkıyı sesten tanı (Shazam)', 'Videonun ses parmak izi Shazam\'a gönderilir. Akımı şarkısından bulmaya yardım eder.', a.shazam_kurulu ? '' : '<small style="color:var(--turuncu)">Kurulu değil: ./kurulum.sh --shazam</small>')}
+    <label class="ayarsatir"><div><b>Tarayıcı oturumu</b><small>Giriş isteyen videolar için tarayıcınızdaki oturum kullanılır. Kapalıyken yalnız herkese açık videolar iner.</small></div>
+      <select data-k="tarayici">${[['', 'Kapalı'], ['chrome', 'Chrome'], ['safari', 'Safari'], ['firefox', 'Firefox'], ['brave', 'Brave'], ['edge', 'Edge'], ['arc', 'Arc']].map(([v, ad]) => `<option value="${v}" ${a.tarayici === v ? 'selected' : ''}>${ad}</option>`).join('')}</select></label>
+    ${satir('sunra', 'Güncel yapay zekâ araçları listesi', 'Rehberde araçların güncel adlarını yazmak için günde bir kez api.sunra.ai\'den herkese açık model listesi alınır.')}
+    <div class="alt" style="margin-top:14px"><button class="btn ana kucuk" data-kapat>Kapat</button></div></div>`;
+  document.body.appendChild(p);
+  p.addEventListener('change', async e => { const el = e.target.closest('[data-k]'); if (!el) return;
+    try{ await api('/api/content/ayar', json({[el.dataset.k]: el.type === 'checkbox' ? el.checked : el.value})); toast(t('Kaydedildi.')); }catch(er){ toast(er.message); } });
+  p.addEventListener('click', e => { if (e.target === p || e.target.closest('[data-kapat]')) p.remove(); });
+};
+(() => { const U = [['transcript', 'Studio', 8765], ['note', 'Meet', 8766], ['ghost', 'Ghost', 8767], ['content', 'Content', 8769], ['pt', 'PT', 8771]];
+  const m = $('#urunMenu'); m.innerHTML = U.map(([k, a, p]) => `<a href="${location.protocol}//${location.hostname}:${p}/" class="${String(p) === location.port ? 'on' : ''}"><img src="/static/logo/${k}.svg" alt="">${a}</a>`).join('');
+  $('#urunBtn').onclick = e => { e.stopPropagation(); m.classList.toggle('acik'); };
+  document.addEventListener('click', e => { if (!e.target.closest('#urunBtn,#urunMenu')) m.classList.remove('acik'); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') m.classList.remove('acik'); }); })();
+
+const YONTEM_AD = {capcut_sablon: 'CapCut şablonuyla yapılmış', capcut_elle: 'CapCut’ta elle kurgulanmış', yapay_zeka_araci: 'Yapay zekâyla yapılmış',
+  cekim_kurgu: 'Çekilip kurgulanmış', ekran_kaydi: 'Ekran kaydıyla yapılmış', karisik: 'Birkaç yöntem birlikte kullanılmış'};
+const GUVEN = {yuksek: ['Eminim', ''], orta: ['Büyük olasılıkla', 'orta'], dusuk: ['Tahminim', 'dusuk']};
+const CALISIYOR = d => d.calisiyor || ['cozuluyor', 'planlaniyor'].includes(d.durum);
+
+/* ---------- 1. ekran: link + ne istediğiniz ---------- */
+const linkGecerli = v => /^https?:\/\/\S+\.\S+/.test(v.trim());
+const SITE = v => { const h = (v.match(/^https?:\/\/([^/]+)/) || [, ''])[1].replace(/^www\.|^m\./, '');
+  return /tiktok/.test(h) ? 'TikTok' : /instagram/.test(h) ? 'Instagram' : /youtu/.test(h) ? 'YouTube' : /(^|\.)x\.com|twitter/.test(h) ? 'X' : h; };
+function linkDurum(){
+  const v = $('#link').value, ok = linkGecerli(v), n = $('#linkNot');
+  $('#coz').disabled = !ok; $('#adim2').classList.toggle('kapali', !ok);
+  if (!v.trim()){ n.className = 'ipucu'; n.textContent = 'TikTok, Instagram, YouTube ya da X’ten bir video.'; }
+  else if (ok){ n.className = 'ipucu ok'; n.textContent = `✓ ${SITE(v)} videosu`; }
+  else { n.className = 'ipucu hata'; n.textContent = 'Bu bir link gibi görünmüyor. “https://” ile başlamalı.'; }
+}
+$('#link').addEventListener('input', linkDurum);
+$('#yapistir').onclick = async () => {
+  try{ const t = (await navigator.clipboard.readText()).trim(); if (!t){ toast('Panoda bir şey yok. Önce videonun linkini kopyalayın.'); return; }
+    $('#link').value = t; linkDurum(); if (linkGecerli(t)) $('#adim2').scrollIntoView({behavior: 'smooth', block: 'center'}); }
+  catch(e){ $('#link').focus(); toast('Linki kutuya basılı tutup “Yapıştır”ı seçin.'); }
+};
+$$('.secimler[data-grup]').forEach(g => g.addEventListener('click', e => { const b = e.target.closest('.secim'); if (!b) return;
+  const ac = b.getAttribute('aria-pressed') !== 'true';
+  if (g.dataset.tek) $$('.secim', g).forEach(x => x.setAttribute('aria-pressed', 'false'));
+  b.setAttribute('aria-pressed', String(ac)); }));
+const istekMetni = () => [...$$('#form .secim[aria-pressed=true]').map(b => t(b.dataset.v)), $('#istek').value.trim()].filter(Boolean).join('. ');
+$('#form').onsubmit = async e => {
+  e.preventDefault(); if (!linkGecerli($('#link').value)) { linkDurum(); return; }
+  const b = $('#coz'); b.disabled = true; b.textContent = t('Başlıyor…');
+  try{ const j = await api('/api/content', json({link: $('#link').value.trim(), istek: istekMetni(), dil: DIL}));
+    $('#link').value = ''; $('#istek').value = ''; $$('#form .secim').forEach(x => x.setAttribute('aria-pressed', 'false')); linkDurum();
+    location.hash = '#c=' + j.id; }
+  catch(er){ toast(er.message); b.disabled = false; }
+  finally{ b.textContent = t('Nasıl yapıldığını göster'); }
+};
+$('#istek').onkeydown = e => { if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) $('#form').requestSubmit(); };
+document.addEventListener('paste', e => {      /* sayfada bir kutuya odaklı değilken link yapıştırılırsa link kutusuna */
+  if (!$('#isSayfa').classList.contains('hidden') || /INPUT|TEXTAREA/.test((document.activeElement || {}).tagName || '')) return;
+  const t = ((e.clipboardData || {}).getData ? e.clipboardData.getData('text') : '').trim();
+  if (linkGecerli(t)){ e.preventDefault(); $('#link').value = t; linkDurum(); }
+});
+
+let ISLER = [], tumunu = false;
+async function gecmisCiz(){
+  try{ ISLER = (await api('/api/content')).isler || []; }catch(e){ return; }
+  const L = ISLER.filter(x => !x.seri);
+  $('#gecmisBolum').classList.toggle('hidden', !L.length);
+  $('#hepsi').classList.toggle('hidden', L.length <= 6 || tumunu);
+  $('#gecmis').innerHTML = L.slice(0, tumunu ? 60 : 6).map(x => {
+    const cal = ['cozuluyor', 'planlaniyor'].includes(x.durum), hata = ['hata', 'kesildi'].includes(x.durum);
+    const bas = cal ? '<span class="nokta"></span>İnceleniyor' : hata ? '<span class="nokta hata"></span>Çözülemedi' : esc(x.yontem_baslik || YONTEM_AD[x.yontem] || 'Henüz incelenmedi');
+    return `<a class="gkart" href="#c=${x.id}"><span class="k" style="${x.kapak ? `background-image:url(/content-dosya/${x.id}/kapak.jpg)` : ''}"></span><span><b>${bas}</b><small>${esc(x.baslik && !/^https?:/.test(x.baslik) ? x.baslik : (x.istek || x.baslik || ''))}</small></span></a>`;
+  }).join('');
+}
+$('#hepsi').onclick = () => { tumunu = true; gecmisCiz(); };
+
+/* ---------- 2. ekran: bekleme ve rehber ---------- */
+let D = null, zaman = null, imza = '';
+const ASAMALAR = [['Video indiriliyor', /indiriliyor|asıl videosu/i, 'Video indirildi'], ['Video izleniyor', /yazıya|sahne|kare|kalıb|ekran yazı|daha önce çözülmüş/i, 'Video izlendi'],
+  ['Müzik ve ipuçları aranıyor', /platform|şarkı|akım|konuşmanın|yorum/i, 'Müzik ve ipuçları toplandı'], ['Benzer öğretici videolar inceleniyor', /öğretici/i, 'Benzer öğretici videolar incelendi'],
+  ['Adımlar yazılıyor', /denetleniyor|rehber hazır/i, 'Adımlar yazıldı']];
+function asama(d){              /* yalnız son incelemenin kayıtları: yeniden incelemede eski "Rehber hazır" sayılmasın */
+  const L = d.log || []; let bas = 0, en = 0;
+  L.forEach(([, m], i) => { if (/Video indiriliyor|Yapılış yöntemi çözülüyor|Düzeltmeniz işleniyor/.test(m)) bas = i; });
+  if (/Yapılış yöntemi çözülüyor|Düzeltmeniz işleniyor/.test((L[bas] || [])[1] || '')) en = 2;     /* video zaten indirilip izlenmiş */
+  L.slice(bas).forEach(([, m]) => ASAMALAR.forEach(([, r], i) => { if (r.test(m)) en = Math.max(en, i); }));
+  return en;
+}
+async function isYukle(cid){
+  let d; try{ d = await api('/api/content/' + cid); }
+  catch(e){ $('#isSayfa').innerHTML = '<a class="geri" href="#">‹ Yeni video</a><div class="kart"><p>Bu video bulunamadı. Silinmiş olabilir.</p></div>'; return; }
+  D = d; const yeni = JSON.stringify([d.durum, d.calisiyor, d.adim, d.yontem && d.yontem.zaman, d.hata]);
+  if (yeni !== imza && !(document.activeElement && $('#isSayfa').contains(document.activeElement) && document.activeElement.value)){ imza = yeni; isCiz(); }
+  clearTimeout(zaman); if (CALISIYOR(d) && location.hash.startsWith('#c=')) zaman = setTimeout(() => isYukle(cid), 2500);
+}
+function videoHtml(d, oynat){
+  const k = d.kaynak || {};
+  const yatay = k.w && k.h && k.w > k.h, sinif = yatay ? 'video yatay' : 'video';
+  if (oynat && k.sure) return `<div class="${sinif}"><video src="/content-dosya/${d.id}/kaynak.mp4" controls playsinline preload="metadata" poster="/content-dosya/${d.id}/kapak.jpg"></video></div>`;
+  return `<div class="${sinif}" style="background-image:url(/content-dosya/${d.id}/kapak.jpg)"></div>`;
+}
+function isCiz(){
+  const d = D, y = d.yontem;
+  document.title = 'Content';
+  let h = '<a class="geri" href="#">‹ Yeni video</a>';
+  if (CALISIYOR(d)){
+    const a = asama(d);
+    h += `<div class="ust bekleme">${videoHtml(d)}<div><p class="etk">Biraz bekleyin</p><h1>Videoyu inceliyorum</h1><p class="gri" style="margin:0">Yaklaşık 5 dakika sürer. Bu sayfayı kapatabilirsiniz; hazır olunca bildirim gelir.</p>
+      <ul class="asamalar">${ASAMALAR.map(([ad, , bitti], i) => `<li class="${i < a ? 'bitti' : i === a ? 'simdi' : ''}"><i>${i < a ? '✓' : ''}</i>${i < a ? bitti : ad}</li>`).join('')}</ul>
+      ${d.istek ? `<p class="istekiniz">İsteğiniz: ${esc(d.istek)}</p>` : ''}</div></div>`;
+  } else if (['hata', 'kesildi'].includes(d.durum) && !y){
+    h += `<div class="ust">${videoHtml(d)}<div class="kart hatakart"><h1 class="sonuc" style="font-size:26px">Bu videoyu çözemedim</h1><p class="gri">${esc(d.hata || 'İnceleme yarıda kaldı.')}</p>
+      <p class="gri" style="font-size:14.5px">Video gizli ya da silinmiş olabilir. Linkin herkese açık bir videoya ait olduğundan emin olun.</p>
+      <div class="altlar" style="margin-top:12px"><button class="btn ana" data-g="yeniden">Tekrar dene</button><a class="btn" href="#">Başka video</a></div></div></div>`;
+  } else if (!y){
+    h += `<div class="ust">${videoHtml(d)}<div class="kart"><h1 class="sonuc" style="font-size:26px">Bu video için rehber yok</h1><p class="gri">Eski bir sürümle incelenmiş. Şimdi baştan inceleyebilirim.</p>
+      <div class="altlar" style="margin-top:12px"><button class="btn ana" data-g="yeniden">Şimdi incele</button></div></div></div>`;
+  } else h += rehberHtml(d, y);
+  h += d.yontem || !CALISIYOR(d) ? `<div class="altlar">${y ? '<button class="btn" data-g="rehberKopyala">Rehberi kopyala</button>' : ''}<a class="btn" href="#">Yeni video</a><button class="metin sag" data-g="sil" style="color:var(--ink3)">Sil</button></div>` : '';
+  $('#isSayfa').innerHTML = h;
+}
+function rehberHtml(d, y){
+  const id = d.id, [gAd, gS] = GUVEN[y.guven] || ['', ''];
+  let ok = {}; try{ ok = JSON.parse(store.get('cAdim_' + id, '{}')); }catch(e){}
+  const adimlar = y.adimlar || [], n = adimlar.length, bitti = adimlar.filter((_, i) => ok[i]).length, simdi = adimlar.findIndex((_, i) => !ok[i]);
+  let h = `<div class="ust">${videoHtml(d, true)}<div><p class="etk">Bu video</p><h1 class="sonuc">${esc(y.baslik || YONTEM_AD[y.yontem] || 'Nasıl yapıldığı')}</h1>
+    ${d.kullanici_duzeltmesi ? '<span class="guven" title="Bu rehber sizin düzeltmenize göre yeniden hazırlandı."><i></i>Düzeltmenize göre</span>' : gAd ? `<span class="guven ${gS}" title="${gS === 'dusuk' ? 'Kesin kanıt bulamadım; en olası yolu yazdım.' : gS === 'orta' ? 'Güçlü ipuçları var ama kesin kanıt yok.' : 'Videonun sayfasında ya da sahibinin açıklamasında kanıt var.'}"><i></i>${gAd}</span>` : ''}
+    <p class="ozet">${esc(y.ozet || '')}</p>${d.istek ? `<p class="istekiniz">İsteğiniz: ${esc(d.istek)}</p>` : ''}${d.kullanici_duzeltmesi ? `<p class="istekiniz">Düzeltmeniz: ${esc(d.kullanici_duzeltmesi)}</p>` : ''}</div></div>`;
+  h += dogruHtml(d);
+  /* size gerekenler */
+  const G = [], kk = y.kaynak_klip || {}, sb = y.sablon || {}, sk = ((d.sayfa_kaniti || {}).baglantilar || []).find(b => b.sablon_id) || {};
+  if (sb.var){ const lk = sb.link || sk.link;
+    G.push(`<div class="kart vurgulu"><b>Şablon${sb.ad ? ': ' + esc(sb.ad) : ''}</b><p>${esc(sb.nasil_bulunur || 'Hazır bir şablon kullanılmış.')}</p>${lk ? `<a class="btn ana kucuk" href="${esc(lk)}" target="_blank" rel="noopener">Şablonu aç ↗</a>` : sb.arama ? `<button class="btn kucuk" data-g="kopyalaMetin" data-m="${esc(sb.arama)}" style="margin-top:10px">“${esc(sb.arama)}” aramasını kopyala</button>` : ''}</div>`); }
+  for (const a of y.araclar || []){
+    const ucret = String(a.ucret || ''), bedava = /ücretsiz/i.test(ucret) && !/ücretli/i.test(ucret.replace('ücretsiz', '')), tahmin = a.kesin === false && !['kesin', 'neredeyse kesin'].includes(a.kademe);
+    const [ad, ornek] = aracAdi(a);
+    G.push(`<div class="kart"><b>${esc(ad)}</b>${ornek ? `<p class="gri" style="font-size:13.5px">Örneğin ${esc(ornek)}</p>` : ''}<p>${esc(a.ne_icin || '')}</p>${ucret ? `<span class="etiket ${bedava ? 'bedava' : /ücretli/i.test(ucret) ? 'ucret' : ''}">${esc(ucret.charAt(0).toUpperCase() + ucret.slice(1))}</span>` : ''}${tahmin ? '<span class="etiket" title="Bu aracın kullanıldığına dair kesin kanıt yok; benzer işi yapan bir araç da olabilir.">Tahmin</span>' : ''}</div>`);
+  }
+  if (kk.olasi && kk.ne) G.push(`<div class="kart"><b>Orijinal görüntü</b><p>${esc(kk.ne)}</p>${/^https:\/\//.test(kk.link || '') ? `<a class="btn kucuk" href="${esc(kk.link)}" target="_blank" rel="noopener">İzle ↗</a>` : ''}${kk.kesin ? '' : '<span class="etiket">Tahmin</span>'}</div>`);
+  const hazir = (y.gerekenler || []).slice(0, 6);
+  if (G.length || hazir.length) h += `<div class="bolum"><h2>Size gerekenler</h2><p class="alt">Başlamadan önce bunları hazırlayın.</p>${G.length ? `<div class="gerek">${G.join('')}</div>` : ''}${hazir.length ? `<div class="kart" style="margin-top:10px"><ul class="duz">${hazir.map(x => `<li>${esc(x)}</li>`).join('')}</ul></div>` : ''}</div>`;
+  /* adım adım */
+  if (n) h += `<div class="bolum"><h2>Adım adım</h2><p class="alt">${[y.sure, {kolay: 'Kolay', orta: 'Orta zorlukta', zor: 'Zor'}[y.zorluk]].filter(Boolean).map(x => `<span>${esc(x)}</span>`).join(' · ') || '<span>Sırayla uygulayın.</span>'}<br><span>Bitirdiğiniz adımın numarasına dokunun.</span></p>
+    <div class="ilerleme"><div class="cubuk"><span style="width:${n ? Math.round(bitti / n * 100) : 0}%"></span></div><b>${bitti === n ? 'Bitti 🎉' : `${bitti} / ${n} adım`}</b></div>
+    <div class="adimlar">${adimlar.map((a, i) => `<div class="adim ${ok[i] ? 'bitti' : i === simdi ? 'simdi' : ''}"><button class="tik" data-adim="${i}" aria-label="${ok[i] ? 'Yapılmadı olarak işaretle' : 'Yaptım'}">${ok[i] ? '✓' : i + 1}</button><div>
+      ${i === simdi ? '<span class="simdirozet">Sıradaki</span>' : ''}<h3>${esc(a.baslik || '')}</h3>${a.nerede ? `<div class="yer">${esc(a.nerede)}</div>` : ''}<p class="ne">${esc(a.ne_yapilir || '')}</p>
+      ${a.ipucu ? `<p class="ip">💡 ${esc(a.ipucu)}</p>` : ''}${a.emin === false ? '<p class="emin">Bu düğmenin adı ekranınızda biraz farklı olabilir; benzerini arayın.</p>' : ''}</div></div>`).join('')}</div></div>`;
+  if ((y.sik_hatalar || []).length) h += `<div class="bolum"><h2>Takılırsanız</h2><p class="alt">En sık yapılan hatalar.</p><div class="kart"><ul class="duz">${y.sik_hatalar.map(x => `<li>${esc(x)}</li>`).join('')}</ul></div></div>`;
+  /* Claude yapabilirse */
+  const cy = y.claude_yolu || {}, clVar = cy.mumkun === true || (cy.mumkun !== false && adimlar.some(a => a.kim === 'claude'));
+  if (clVar) h += `<div class="bolum"><h2>Uğraşmak istemiyor musunuz?</h2><p class="alt">Bu adımları bilgisayarınızda Claude sizin yerinize uygulayabilir.</p><div class="kart"><p style="margin:0 0 12px">Claude uygulamasında yeni bir sohbet açın ve hazırladığım isteği yapıştırın. Giriş, ödeme ya da telefonda yapılması gereken bir adıma gelince durup size sorar.</p><button class="btn" data-g="claude">İsteği kopyala</button></div></div>`;
+  /* farklı yapmak */
+  h += `<div class="bolum farkli"><h2>Farklı yapmak ister misiniz?</h2><p class="alt">Seçin ya da yazın; rehberi size göre yeniden hazırlarım.</p>
+    <div class="secimler" id="farkliSec">${['Telefonda yapacağım', 'Bilgisayarda yapacağım', 'Yalnız ücretsiz araçlarla', 'Kendi fotoğrafımla', 'Daha kolay bir yol'].map(v => `<button type="button" class="secim" data-v="${v}" aria-pressed="false">${v.replace(' yapacağım', '').replace('Yalnız ü', 'Ü')}</button>`).join('')}</div>
+    <div class="satir"><input id="farkliMetin" placeholder="Örn. Kendi kedimle yapmak istiyorum"><button class="btn ana" data-g="farkli">Yeniden hazırla</button></div></div>`;
+  /* ayrıntılar */
+  const A = [];
+  if ((y.kanit || []).length) A.push(`<h4>Neden böyle düşünüyorum</h4><ul>${y.kanit.map(x => `<li>${esc(x)}</li>`).join('')}</ul>`);
+  if ((y.emin_olmadiklarim || []).length) A.push(`<h4>Emin olmadıklarım</h4><ul>${y.emin_olmadiklarim.map(x => `<li>${esc(x)}</li>`).join('')}</ul>`);
+  if ((y.hareket_tutanagi || []).length) A.push(`<h4>Videoda sahne sahne ne oluyor</h4><ul>${y.hareket_tutanagi.map(x => `<li>${esc(x)}</li>`).join('')}</ul>`);
+  const kay = [...(y.kaynaklar || []).map(x => ({link: x.link, ad: x.baslik, ne: x.ne_aldin})), ...(y.web_kaynaklar || []).map(x => ({link: x.link, ad: (x.link || '').replace(/^https:\/\/(www\.)?/, '').split('/')[0], ne: x.ne}))].filter(x => /^https:\/\//.test(x.link || ''));
+  if (kay.length) A.push(`<h4>Baktığım kaynaklar</h4><ul>${kay.map(x => `<li><a href="${esc(x.link)}" target="_blank" rel="noopener">${esc(x.ad || x.link)} ↗</a>${x.ne ? ` · ${esc(x.ne)}` : ''}</li>`).join('')}</ul>`);
+  if ((y.bulunamayanlar || []).length) A.push(`<h4>Baktım, bulamadım</h4><ul>${y.bulunamayanlar.map(x => `<li>${esc(x)}</li>`).join('')}</ul>`);
+  if (A.length) h += `<details class="ayrinti"><summary>Nasıl karar verdim</summary>${A.join('')}</details>`;
+  return h;
+}
+/* "Doğru mu?": düzeltme rehberi yeniden yazdırır, genel bir derse ve deneme setine dönüşür (content_dogrulama) */
+let dogruAcik = '';
+function dogruHtml(d){
+  const v = d.dogrulama || {};
+  if (v.karar === 'dogru' && !d.kullanici_duzeltmesi) return '<div class="kart dogru"><p>✓ Doğru dediniz. Teşekkürler; bu video bundan sonra Content’in doğruluğunu ölçmekte kullanılacak.</p></div>';
+  const ac = dogruAcik;
+  return `<div class="kart dogru"><p class="dsoru"><b>${d.kullanici_duzeltmesi ? 'Şimdi doğru mu?' : 'Doğru bulmuş muyum?'}</b> Bildiğiniz bir video ise söyleyin; Content her düzeltmeden öğrenir.</p>
+    <div class="secimler">${[['dogru', 'Doğru'], ['kismen', 'Kısmen'], ['yanlis', 'Yanlış']].map(([k, a]) => `<button type="button" class="secim" data-dogru="${k}" aria-pressed="${ac === k}">${a}</button>`).join('')}</div>
+    ${ac && ac !== 'dogru' ? `<textarea class="serbest" id="dogruNot" placeholder="Aslında nasıl yapılmıştı? Bildiğiniz kadarını yazın. Örn. “Bir filmden sahne alınmış, sesi aynı, yalnız yüzler değiştirilmiş.”"></textarea><div style="margin-top:10px"><button class="btn ana" data-g="dogruGonder">Düzelt ve yeniden hazırla</button></div>` : ''}</div>`;
+}
+/* eski rehberlerde araç adı "X (örneğin A, B ya da C)" biçiminde uzun: kısa ad + örnek */
+function aracAdi(a){
+  let ad = String(a.ad || '').trim(), ornek = String(a.ornek || '').trim();
+  const m = ad.match(/^(.*?)\s*\((.*)\)\s*$/);
+  if (m){ ad = m[1]; if (!ornek) ornek = m[2].replace(/^(örneğin|ör\.|mesela)\s*/i, ''); }
+  return [ad, ornek.replace(/^(örneğin|ör\.|mesela)\s*/i, '')];
+}
+const rehberMetni = y => [y.baslik || t(YONTEM_AD[y.yontem]) || '', y.ozet || '', '',
+  (y.araclar || []).length ? t('Size gerekenler') + ': ' + y.araclar.map(a => { const [ad, o] = aracAdi(a); return o ? `${ad} (${DIL === 'en' ? 'for example' : 'örneğin'} ${o})` : ad; }).join(', ') : '',
+  y.sablon && y.sablon.var ? t('Şablon') + ': ' + (y.sablon.nasil_bulunur || '') : '', '',
+  ...(y.adimlar || []).map((a, i) => `${i + 1}. ${a.baslik}${a.nerede ? ' (' + a.nerede + ')' : ''}: ${a.ne_yapilir}${a.ipucu ? (DIL === 'en' ? ' Tip: ' : ' İpucu: ') + a.ipucu : ''}`)].join('\n').replace(/\n{3,}/g, '\n\n').trim();
+const claudeIstegi = d => { const ad = String((d.kaynak || {}).baslik || d.istek || 'video').slice(0, 60), u = `${location.origin}/#c=${d.id}`;
+  return DIL === 'en' ? `Carry out the Content guide "${ad}" on my computer (${u}). Do the steps in order while watching the screen; stop and ask me at any step that needs a login, a payment or my phone.`
+    : `Content'teki "${ad}" rehberini bilgisayarımda uygula (${u}). Adımları sırayla ekranı görerek yap; giriş, ödeme ya da telefonda yapılması gereken adımda dur ve bana sor.`; };
+
+$('#isSayfa').addEventListener('click', async e => {
+  const el = e.target.closest('[data-adim],[data-g],[data-dogru],.secim'); if (!el || !D) return;
+  if (el.dataset.dogru){
+    if (el.dataset.dogru === 'dogru'){ try{ await api(`/api/content/${D.id}/dogru`, json({karar: 'dogru'})); dogruAcik = ''; imza = ''; isYukle(D.id); toast('Teşekkürler.'); }catch(er){ toast(er.message); } return; }
+    dogruAcik = el.dataset.dogru; const y0 = window.scrollY; isCiz(); window.scrollTo(0, y0); $('#dogruNot') && $('#dogruNot').focus(); return;
+  }
+  if (el.matches('.secim')){ el.setAttribute('aria-pressed', String(el.getAttribute('aria-pressed') !== 'true')); return; }
+  if (el.dataset.adim !== undefined){
+    const k = 'cAdim_' + D.id; let ok = {}; try{ ok = JSON.parse(store.get(k, '{}')); }catch(x){}
+    if (ok[el.dataset.adim]) delete ok[el.dataset.adim]; else ok[el.dataset.adim] = 1; store.set(k, JSON.stringify(ok));
+    const y0 = window.scrollY; isCiz(); window.scrollTo(0, y0); return;
+  }
+  const g = el.dataset.g;
+  if (g === 'rehberKopyala') kopyala(rehberMetni(D.yontem), 'Rehber kopyalandı.');
+  else if (g === 'kopyalaMetin') kopyala(el.dataset.m);
+  else if (g === 'claude') kopyala(claudeIstegi(D), 'İstek kopyalandı. Claude uygulamasına yapıştırın.');
+  else if (g === 'dogruGonder'){
+    const not_ = ($('#dogruNot') || {}).value || ''; if (!not_.trim()){ toast('Videonun aslında nasıl yapıldığını kısaca yazın.'); return; }
+    try{ await api(`/api/content/${D.id}/dogru`, json({karar: dogruAcik, not: not_.trim()})); dogruAcik = ''; store.set('cAdim_' + D.id, '{}'); imza = ''; window.scrollTo(0, 0); isYukle(D.id); }catch(er){ toast(er.message); }
+  }
+  else if (g === 'yeniden'){ try{ await api(`/api/content/${D.id}/yontem`, json({dil: DIL})); imza = ''; isYukle(D.id); }catch(er){ toast(er.message); } }
+  else if (g === 'farkli'){
+    const ek = [...$$('#farkliSec .secim[aria-pressed=true]').map(b => t(b.dataset.v)), $('#farkliMetin').value.trim()].filter(Boolean).join('. ');
+    if (!ek){ toast('Önce bir seçenek seçin ya da ne istediğinizi yazın.'); return; }
+    try{ await api(`/api/content/${D.id}/istek`, json({istek: [D.istek, ek].filter(Boolean).join('. '), dil: DIL})); store.set('cAdim_' + D.id, '{}'); imza = ''; window.scrollTo(0, 0); isYukle(D.id); }catch(er){ toast(er.message); }
+  }
+  else if (g === 'sil'){
+    const id = D.id; try{ await api('/api/content/' + id, {method: 'DELETE'}); }catch(er){ toast(er.message); return; }
+    location.hash = ''; toast('Silindi.', 'Geri al', async () => { await api(`/api/content/${id}/geri-al`, {method: 'POST'}); gecmisCiz(); });
+  }
+});
+$('#isSayfa').addEventListener('keydown', e => { if (e.key === 'Enter' && e.target.id === 'farkliMetin') $('[data-g=farkli]').click(); });
+
+function yonlendir(){
+  clearTimeout(zaman);
+  const m = location.hash.match(/^#c=([a-f0-9]{10})/);
+  $('#ana').classList.toggle('hidden', !!m); $('#isSayfa').classList.toggle('hidden', !m);
+  window.scrollTo(0, 0);
+  if (m){ imza = ''; $('#isSayfa').innerHTML = '<a class="geri" href="#">‹ Yeni video</a>'; isYukle(m[1]); }
+  else { document.title = 'Content'; gecmisCiz(); }
+}
+(() => { const q = new URLSearchParams(location.search);       /* başka üründen "Content'te dene": ?link=&istek= kutuları doldurur */
+  if (q.get('link')){ $('#link').value = q.get('link'); $('#istek').value = q.get('istek') || ''; linkDurum(); history.replaceState(null, '', location.pathname + location.hash); } })();
+addEventListener('hashchange', yonlendir);
+document.addEventListener('visibilitychange', () => { if (!document.hidden){ if (D && location.hash.startsWith('#c=')) isYukle(D.id); else if (!location.hash) gecmisCiz(); } });
+yonlendir();
+</script>
+</body>
+</html>
