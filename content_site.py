@@ -87,6 +87,7 @@ def _dis(d):
     if d.get("tarif"):
         d["tarif"] = {k: v for k, v in d["tarif"].items() if k != "ses_yazisi"}
     d["calisiyor"] = d["id"] in calisan
+    d["kapak"] = (content.KOK / d["id"] / "kapak.jpg").exists()       # sayfa, kapağı olmayan (indirilememiş) video için boş kutu çizmesin
     return d
 
 

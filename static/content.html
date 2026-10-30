@@ -224,7 +224,7 @@ details.ayrinti li{margin:4px 0}
       </div>
       <div class="gonder">
         <button class="btn ana buyuk" id="coz" type="submit" disabled>Nasıl yapıldığını göster</button>
-        <p class="ipucu">Yaklaşık 5 dakika sürer.</p>
+        <p class="ipucu">Yaklaşık 5-10 dakika sürer.</p>
       </div>
     </form>
     <div id="gecmisBolum" class="hidden">
@@ -249,7 +249,7 @@ const EN = {
   'Kendi fotoğrafımla yapmak istiyorum': 'I want to make it with my own photo', 'Kendi videomla yapmak istiyorum': 'I want to make it with my own video',
   'Markam için uyarlayacağım': 'I will adapt it for my brand', 'Yalnız ücretsiz araçlarla': 'Free tools only',
   'Başka eklemek istediğiniz bir şey var mı? Örn. “Kedimin fotoğrafıyla yapmak istiyorum”': 'Anything else? E.g. “I want to do it with a photo of my cat”',
-  'Nasıl yapıldığını göster': 'Show me how it was made', 'Yaklaşık 5 dakika sürer.': 'Takes about 5 minutes.', 'Başlıyor…': 'Starting…',
+  'Nasıl yapıldığını göster': 'Show me how it was made', 'Yaklaşık 5-10 dakika sürer.': 'Takes about 5 to 10 minutes.', 'Başlıyor…': 'Starting…',
   'Önceki videolarınız': 'Your earlier videos', 'Tümünü göster': 'Show all', 'İnceleniyor': 'Analysing', 'Çözülemedi': 'Could not be solved',
   'Henüz incelenmedi': 'Not analysed yet', 'Diğer ürünler': 'Other products', 'Açık ya da koyu görünüm': 'Light or dark', 'Görünüm': 'Appearance',
   'Ayarlar': 'Settings', 'Dil': 'Language',
@@ -265,7 +265,7 @@ const EN = {
   'Benzer öğretici videolar inceleniyor': 'Reading tutorials for similar videos', 'Benzer öğretici videolar incelendi': 'Tutorials read',
   'Adımlar yazılıyor': 'Writing the steps', 'Adımlar yazıldı': 'Steps written',
   '‹ Yeni video': '‹ New video', 'Yeni video': 'New video', 'Biraz bekleyin': 'Hang on', 'Videoyu inceliyorum': 'Analysing the video',
-  'Yaklaşık 5 dakika sürer. Bu sayfayı kapatabilirsiniz; hazır olunca bildirim gelir.': 'Takes about 5 minutes. You can close this page; you will get a notification when it is ready.',
+  'Yaklaşık 5-10 dakika sürer; uzun videolarda biraz daha. Bu sayfayı kapatabilirsiniz; hazır olunca bildirim gelir.': 'Takes about 5 to 10 minutes, a little longer for long videos. You can close this page; you will get a notification when it is ready.',
   'Bu videoyu çözemedim': 'I could not work this video out', 'İnceleme yarıda kaldı.': 'The analysis stopped halfway.',
   'Video gizli ya da silinmiş olabilir. Linkin herkese açık bir videoya ait olduğundan emin olun.': 'The video may be private or deleted. Make sure the link is to a public video.',
   'Tekrar dene': 'Try again', 'Başka video': 'Another video', 'Bu video için rehber yok': 'No guide for this video yet',
@@ -386,6 +386,8 @@ $('#ayarBtn').onclick = async () => {
   p.addEventListener('change', async e => { const el = e.target.closest('[data-k]'); if (!el) return;
     try{ await api('/api/content/ayar', json({[el.dataset.k]: el.type === 'checkbox' ? el.checked : el.value})); toast(t('Kaydedildi.')); }catch(er){ toast(er.message); } });
   p.addEventListener('click', e => { if (e.target === p || e.target.closest('[data-kapat]')) p.remove(); });
+  const esc_ = e => { if (e.key === 'Escape'){ p.remove(); document.removeEventListener('keydown', esc_); } };
+  document.addEventListener('keydown', esc_);
 };
 (() => { const U = [['transcript', 'Studio', 8765], ['note', 'Meet', 8766], ['ghost', 'Ghost', 8767], ['content', 'Content', 8769], ['pt', 'PT', 8771]];
   const m = $('#urunMenu'); m.innerHTML = U.map(([k, a, p]) => `<a href="${location.protocol}//${location.hostname}:${p}/" class="${String(p) === location.port ? 'on' : ''}"><img src="/static/logo/${k}.svg" alt="">${a}</a>`).join('');
@@ -473,6 +475,7 @@ function videoHtml(d, oynat){
   const k = d.kaynak || {};
   const yatay = k.w && k.h && k.w > k.h, sinif = yatay ? 'video yatay' : 'video';
   if (oynat && k.sure) return `<div class="${sinif}"><video src="/content-dosya/${d.id}/kaynak.mp4" controls playsinline preload="metadata" poster="/content-dosya/${d.id}/kapak.jpg"></video></div>`;
+  if (d.kapak === false) return '';           /* video inmemiş: boş bir kutu göstermenin anlamı yok */
   return `<div class="${sinif}" style="background-image:url(/content-dosya/${d.id}/kapak.jpg)"></div>`;
 }
 function isCiz(){
@@ -481,7 +484,7 @@ function isCiz(){
   let h = '<a class="geri" href="#">‹ Yeni video</a>';
   if (CALISIYOR(d)){
     const a = asama(d);
-    h += `<div class="ust bekleme">${videoHtml(d)}<div><p class="etk">Biraz bekleyin</p><h1>Videoyu inceliyorum</h1><p class="gri" style="margin:0">Yaklaşık 5 dakika sürer. Bu sayfayı kapatabilirsiniz; hazır olunca bildirim gelir.</p>
+    h += `<div class="ust bekleme">${videoHtml(d)}<div><p class="etk">Biraz bekleyin</p><h1>Videoyu inceliyorum</h1><p class="gri" style="margin:0">Yaklaşık 5-10 dakika sürer; uzun videolarda biraz daha. Bu sayfayı kapatabilirsiniz; hazır olunca bildirim gelir.</p>
       <ul class="asamalar">${ASAMALAR.map(([ad, , bitti], i) => `<li class="${i < a ? 'bitti' : i === a ? 'simdi' : ''}"><i>${i < a ? '✓' : ''}</i>${i < a ? bitti : ad}</li>`).join('')}</ul>
       ${d.istek ? `<p class="istekiniz">İsteğiniz: ${esc(d.istek)}</p>` : ''}</div></div>`;
   } else if (['hata', 'kesildi'].includes(d.durum) && !y){
@@ -505,7 +508,7 @@ function rehberHtml(d, y){
   h += dogruHtml(d);
   /* size gerekenler */
   const G = [], kk = y.kaynak_klip || {}, sb = y.sablon || {}, sk = ((d.sayfa_kaniti || {}).baglantilar || []).find(b => b.sablon_id) || {};
-  if (sb.var){ const lk = sb.link || sk.link;
+  if (sb.var){ const lk = [sk.link, sb.link].find(x => /^https:\/\//.test(x || '')); /* önce platformun verdiği şablon sayfası; model bazen bağlantıya not ekliyor */
     G.push(`<div class="kart vurgulu"><b>Şablon${sb.ad ? ': ' + esc(sb.ad) : ''}</b><p>${esc(sb.nasil_bulunur || 'Hazır bir şablon kullanılmış.')}</p>${lk ? `<a class="btn ana kucuk" href="${esc(lk)}" target="_blank" rel="noopener">Şablonu aç ↗</a>` : sb.arama ? `<button class="btn kucuk" data-g="kopyalaMetin" data-m="${esc(sb.arama)}" style="margin-top:10px">“${esc(sb.arama)}” aramasını kopyala</button>` : ''}</div>`); }
   for (const a of y.araclar || []){
     const ucret = String(a.ucret || ''), bedava = /ücretsiz/i.test(ucret) && !/ücretli/i.test(ucret.replace('ücretsiz', '')), tahmin = a.kesin === false && !['kesin', 'neredeyse kesin'].includes(a.kademe);
@@ -554,8 +557,12 @@ function dogruHtml(d){
 function aracAdi(a){
   let ad = String(a.ad || '').trim(), ornek = String(a.ornek || '').trim();
   const m = ad.match(/^(.*?)\s*\((.*)\)\s*$/);
-  if (m){ ad = m[1]; if (!ornek) ornek = m[2].replace(/^(örneğin|ör\.|mesela)\s*/i, ''); }
-  return [ad, ornek.replace(/^(örneğin|ör\.|mesela)\s*/i, '')];
+  const on = /^(örneğin|ör\.|mesela|ya da|veya|for example|e\.g\.|such as|like|or)\s+/i;   /* model kendi "örneğin"ini yazarsa ikilenmesin */
+  if (m){ ad = m[1]; if (!ornek) ornek = m[2]; }
+  while (on.test(ornek)) ornek = ornek.replace(on, '');
+  ornek = ornek.replace(/^[,:\s]+/, '');
+  if (!/[A-ZÇĞİÖŞÜ]|,/.test(ornek)) ornek = '';   /* "telefon uygulaması" gibi açıklama yazılmışsa örnek değildir; yalnız ad listesi gösterilir */
+  return [ad, ornek];
 }
 const rehberMetni = y => [y.baslik || t(YONTEM_AD[y.yontem]) || '', y.ozet || '', '',
   (y.araclar || []).length ? t('Size gerekenler') + ': ' + y.araclar.map(a => { const [ad, o] = aracAdi(a); return o ? `${ad} (${DIL === 'en' ? 'for example' : 'örneğin'} ${o})` : ad; }).join(', ') : '',

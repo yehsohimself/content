@@ -110,7 +110,7 @@ JSON döndür:
  "yontem": "capcut_sablon | capcut_elle | yapay_zeka_araci | cekim_kurgu | ekran_kaydi | karisik",
  "guven": "yuksek | orta | dusuk",
  "kanit": ["neye bakarak bu sonuca vardın, kısa maddeler"],
- "araclar": [{{"ad": "KISA ad, en çok 4 kelime (ör. 'Yapay zekâ video aracı', 'CapCut'); parantez ve örnek listesi YOK", "ornek": "kanıt yoksa örnek araçlar, kısa (ör. 'Kling, Dreamina ya da Wan') ya da boş", "ne_icin": "bu videoda ne işe yaradı", "ucret": "ücretsiz | ücretli | bir kısmı ücretli", "dayanak": "platform | sahip | dosya | logo | ogretici | web | yorum | reklam | olcum | gorsel"}}],
+ "araclar": [{{"ad": "KISA ad, en çok 4 kelime (ör. 'Yapay zekâ video aracı', 'CapCut'); parantez ve örnek listesi YOK; YALNIZ uygulama/araç/hizmet (film klipleri, fotoğraf, şarkı gibi MALZEME araç değildir, onlar 'gerekenler'e)", "ornek": "kanıt yoksa örnek araçlar, yalnız adlar, kısa (ör. 'Kling, Dreamina ya da Wan'; başına 'örneğin' yazma) ya da boş", "ne_icin": "bu videoda ne işe yaradı", "ucret": "ücretsiz | ücretli | bir kısmı ücretli", "dayanak": "platform | sahip | dosya | logo | ogretici | web | yorum | reklam | olcum | gorsel"}}],
  "sablon": {{"var": true, "ad": "şablonun adı (sayfa kanıtında varsa)", "link": "şablon bağlantısı (yalnız sayfa kanıtında varsa)", "nasil_bulunur": "…", "arama": "CapCut'ta aranacak sözcük ya da boş"}},
  "claude_yolu": {{"mumkun": true, "neden": "tek cümle: Claude bu işi Mac'te (tarayıcı ya da masaüstü uygulaması) yapabilir mi, neden", "adimlar": [{{"baslik": "kısa", "ne_yapilir": "Claude'un Mac'te yapacağı iş; kullanıcıdan gereken (fotoğraf dosyası, giriş) varsa söyle"}}]}}
    (Telefona özgü bir uygulama/özellik gerekiyorsa mumkun false ve adimlar boş; şablonun web sayfası ya da masaüstü uygulamasında karşılığı
@@ -227,6 +227,8 @@ def sayfa_kaniti(link):
             except Exception:  # noqa: BLE001
                 pass
         for b in k.get("baglantilar") or []:
+            if b.get("sablon_id") and "template-detail" not in (b.get("link") or ""):   # bağlantı bazen genel "editor-template" sayfasına gider;
+                b["link"] = f"https://www.capcut.com/template-detail/{b['sablon_id']}"     # şablonun kendi sayfası adını ve kaç fotoğraf istediğini verir
             if "capcut.com/template" in (b.get("link") or ""):
                 t = requests.get(b["link"], headers=UA, timeout=20).text
                 m = re.search(r'property="og:description" content="([^"]*)"', t) or re.search(r'name="description" content="([^"]*)"', t)
