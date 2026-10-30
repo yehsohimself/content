@@ -118,6 +118,9 @@ h1.sonuc{font-size:clamp(28px,4.6vw,38px);line-height:1.1;letter-spacing:-.02em;
 .gerek p{margin:4px 0 0;font-size:14.5px;color:var(--ink2)}
 .etiket{display:inline-block;font-size:12.5px;font-weight:600;padding:2px 9px;border-radius:99px;background:var(--yuzey2);color:var(--ink2);margin-top:8px;margin-right:4px}
 .etiket.ucret{color:var(--turuncu)} .etiket.bedava{color:var(--yesil)}
+.katmanlar{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 2px}
+.katman{font-size:12.5px;padding:3px 10px;border-radius:99px;border:1px solid var(--cizgi2);color:var(--ink2)}
+.katman.degisti{border-color:var(--vurgu);color:var(--ink)}
 .gerek .kart.vurgulu{border-color:rgba(var(--vurgu-rgb),.6)}
 .gerek .kart a.btn{display:inline-block;margin-top:10px;text-decoration:none}
 .ilerleme{display:flex;align-items:center;gap:12px;margin:0 0 14px}
@@ -261,7 +264,7 @@ const EN = {
   'Çekilip kurgulanmış': 'Filmed and edited', 'Ekran kaydıyla yapılmış': 'Made with a screen recording', 'Birkaç yöntem birlikte kullanılmış': 'Several methods combined',
   'Eminim': 'Certain', 'Büyük olasılıkla': 'Very likely', 'Tahminim': 'Best guess', 'Düzeltmenize göre': 'Based on your correction',
   'Video indiriliyor': 'Downloading the video', 'Video indirildi': 'Video downloaded', 'Video izleniyor': 'Watching the video', 'Video izlendi': 'Video watched',
-  'Müzik ve ipuçları aranıyor': 'Looking for the music and clues', 'Müzik ve ipuçları toplandı': 'Music and clues collected',
+  'Müzik ve ipuçları aranıyor': 'Looking for the music and clues', 'Müzik ve ipuçları toplandı': 'Music and clues collected', 'Benzer videolar karşılaştırıldı': 'Similar videos compared',
   'Benzer öğretici videolar inceleniyor': 'Reading tutorials for similar videos', 'Benzer öğretici videolar incelendi': 'Tutorials read',
   'Adımlar yazılıyor': 'Writing the steps', 'Adımlar yazıldı': 'Steps written',
   '‹ Yeni video': '‹ New video', 'Yeni video': 'New video', 'Biraz bekleyin': 'Hang on', 'Videoyu inceliyorum': 'Analysing the video',
@@ -289,6 +292,7 @@ const EN = {
   'İsteği kopyala': 'Copy the prompt', 'Farklı yapmak ister misiniz?': 'Want to do it differently?', 'Seçin ya da yazın; rehberi size göre yeniden hazırlarım.': 'Pick or type; I will rewrite the guide for you.',
   'Örn. Kendi kedimle yapmak istiyorum': 'E.g. I want to do it with my cat', 'Yeniden hazırla': 'Rewrite the guide',
   'Neden böyle düşünüyorum': 'Why I think so', 'Emin olmadıklarım': 'What I am not sure about', 'Videoda sahne sahne ne oluyor': 'What happens in the video, scene by scene',
+  'Karşılaştırdığım benzer videolar': 'Similar videos I compared', 'Kaynak: gerçek video': 'Source: real footage', 'Kaynak: fotoğraf': 'Source: a photo', 'Sıfırdan yapay zekâ': 'Generated from scratch', 'Ekran kaydı': 'Screen recording', 'Kişiler değiştirilmiş': 'People swapped', 'Kişi eklenmiş': 'Person added', 'Kişiler orijinal': 'People original', 'Ses sonradan konmuş': 'Audio added later', 'Ses: şarkı': 'Audio: a song', 'Ses orijinal': 'Audio original', 'Sessiz': 'Silent', 'Ortam değiştirilmiş': 'Setting changed', 'Ortam yapay': 'Setting generated', 'Ortam orijinal': 'Setting original', 'Hareket başka bir andan': 'Motion from another clip', 'Durağan görüntü': 'Still image', 'Hareket orijinal': 'Motion original', 'Aynı sesle yapılmış videolar karşılaştırılıyor': 'Comparing videos made with the same sound',
   'Baktığım kaynaklar': 'Sources I checked', 'Baktım, bulamadım': 'Looked for, not found', 'Nasıl karar verdim': 'How I decided',
   '✓ Doğru dediniz. Teşekkürler; bu video bundan sonra Content’in doğruluğunu ölçmekte kullanılacak.': '✓ You said this is right. Thanks; this video will now be used to measure how accurate Content is.',
   'Şimdi doğru mu?': 'Is it right now?', 'Doğru bulmuş muyum?': 'Did I get it right?', 'Bildiğiniz bir video ise söyleyin; Content her düzeltmeden öğrenir.': 'If you know this video, tell me; Content learns from every correction.',
@@ -455,7 +459,7 @@ $('#hepsi').onclick = () => { tumunu = true; gecmisCiz(); };
 /* ---------- 2. ekran: bekleme ve rehber ---------- */
 let D = null, zaman = null, imza = '';
 const ASAMALAR = [['Video indiriliyor', /indiriliyor|asıl videosu/i, 'Video indirildi'], ['Video izleniyor', /yazıya|sahne|kare|kalıb|ekran yazı|daha önce çözülmüş/i, 'Video izlendi'],
-  ['Müzik ve ipuçları aranıyor', /platform|şarkı|akım|konuşmanın|yorum/i, 'Müzik ve ipuçları toplandı'], ['Benzer öğretici videolar inceleniyor', /öğretici/i, 'Benzer öğretici videolar incelendi'],
+  ['Müzik ve ipuçları aranıyor', /platform|şarkı|akım|konuşmanın|yorum|fotoğraf/i, 'Müzik ve ipuçları toplandı'], ['Aynı sesle yapılmış videolar karşılaştırılıyor', /aynı sesle|benzer video/i, 'Benzer videolar karşılaştırıldı'], ['Benzer öğretici videolar inceleniyor', /öğretici/i, 'Benzer öğretici videolar incelendi'],
   ['Adımlar yazılıyor', /denetleniyor|rehber hazır/i, 'Adımlar yazıldı']];
 function asama(d){              /* yalnız son incelemenin kayıtları: yeniden incelemede eski "Rehber hazır" sayılmasın */
   const L = d.log || []; let bas = 0, en = 0;
@@ -505,6 +509,7 @@ function rehberHtml(d, y){
   let h = `<div class="ust">${videoHtml(d, true)}<div><p class="etk">Bu video</p><h1 class="sonuc">${esc(y.baslik || YONTEM_AD[y.yontem] || 'Nasıl yapıldığı')}</h1>
     ${d.kullanici_duzeltmesi ? '<span class="guven" title="Bu rehber sizin düzeltmenize göre yeniden hazırlandı."><i></i>Düzeltmenize göre</span>' : gAd ? `<span class="guven ${gS}" title="${gS === 'dusuk' ? 'Kesin kanıt bulamadım; en olası yolu yazdım.' : gS === 'orta' ? 'Güçlü ipuçları var ama kesin kanıt yok.' : 'Videonun sayfasında ya da sahibinin açıklamasında kanıt var.'}"><i></i>${gAd}</span>` : ''}
     <p class="ozet">${esc(y.ozet || '')}</p>${d.istek ? `<p class="istekiniz">İsteğiniz: ${esc(d.istek)}</p>` : ''}${d.kullanici_duzeltmesi ? `<p class="istekiniz">Düzeltmeniz: ${esc(d.kullanici_duzeltmesi)}</p>` : ''}</div></div>`;
+  h += katmanHtml(y);
   h += dogruHtml(d);
   /* size gerekenler */
   const G = [], kk = y.kaynak_klip || {}, sb = y.sablon || {}, sk = ((d.sayfa_kaniti || {}).baglantilar || []).find(b => b.sablon_id) || {};
@@ -539,9 +544,24 @@ function rehberHtml(d, y){
   if ((y.hareket_tutanagi || []).length) A.push(`<h4>Videoda sahne sahne ne oluyor</h4><ul>${y.hareket_tutanagi.map(x => `<li>${esc(x)}</li>`).join('')}</ul>`);
   const kay = [...(y.kaynaklar || []).map(x => ({link: x.link, ad: x.baslik, ne: x.ne_aldin})), ...(y.web_kaynaklar || []).map(x => ({link: x.link, ad: (x.link || '').replace(/^https:\/\/(www\.)?/, '').split('/')[0], ne: x.ne}))].filter(x => /^https:\/\//.test(x.link || ''));
   if (kay.length) A.push(`<h4>Baktığım kaynaklar</h4><ul>${kay.map(x => `<li><a href="${esc(x.link)}" target="_blank" rel="noopener">${esc(x.ad || x.link)} ↗</a>${x.ne ? ` · ${esc(x.ne)}` : ''}</li>`).join('')}</ul>`);
+  const bz = (d.benzerler || []).filter(x => /^https:\/\//.test(x.link || ''));
+  if (bz.length) A.push(`<h4>Karşılaştırdığım benzer videolar</h4><ul>${bz.map(x => `<li><a href="${esc(x.link)}" target="_blank" rel="noopener">${esc(x.baslik || x.link)} ↗</a> · ${esc(x.yorum || '')}</li>`).join('')}</ul>`);
   if ((y.bulunamayanlar || []).length) A.push(`<h4>Baktım, bulamadım</h4><ul>${y.bulunamayanlar.map(x => `<li>${esc(x)}</li>`).join('')}</ul>`);
   if (A.length) h += `<details class="ayrinti"><summary>Nasıl karar verdim</summary>${A.join('')}</details>`;
   return h;
+}
+/* "Ne değiştirilmiş": kaynak / kişiler / ses / ortam / hareket; yalnız anlamlı olanlar */
+const KATMAN = {
+  kaynak: {video: 'Kaynak: gerçek video', fotograf: 'Kaynak: fotoğraf', yapay: 'Sıfırdan yapay zekâ', ekran_kaydi: 'Ekran kaydı'},
+  kisiler: {degistirilmis: 'Kişiler değiştirilmiş', eklenmis: 'Kişi eklenmiş', aynen: 'Kişiler orijinal'},
+  ses: {dublaj: 'Ses sonradan konmuş', sarki: 'Ses: şarkı', ozgun: 'Ses orijinal', sessiz: 'Sessiz'},
+  ortam: {degistirilmis: 'Ortam değiştirilmiş', yapay: 'Ortam yapay', aynen: 'Ortam orijinal'},
+  hareket: {aktarilmis: 'Hareket başka bir andan', duragan: 'Durağan görüntü', ozgun: 'Hareket orijinal'}};
+function katmanHtml(y){
+  const k = y.degisen_katmanlar || {}; const c = [];
+  for (const [alan, map] of Object.entries(KATMAN)){ const v = String(k[alan] || '').toLowerCase(); if (map[v]) c.push(`<span class="katman ${/degistirilmis|eklenmis|dublaj|yapay|aktarilmis/.test(v) ? 'degisti' : ''}">${esc(map[v])}</span>`); }
+  if (!c.length) return '';
+  return `<div class="katmanlar" title="${esc(k.ozet || '')}">${c.join('')}</div>`;
 }
 /* "Doğru mu?": düzeltme rehberi yeniden yazdırır, genel bir derse ve deneme setine dönüşür (content_dogrulama) */
 let dogruAcik = '';

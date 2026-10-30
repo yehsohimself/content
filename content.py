@@ -192,6 +192,11 @@ def _indir(cid, link):
         return hedef
     if not link_guvenli(link):
         raise RuntimeError("Bu link açılamıyor. Herkese açık bir video linki yapıştırın.")
+    if re.search(r"tiktok\.com/@[^/]+/photo/\d+", link):          # TikTok fotoğraf gönderisi: yt-dlp desteklemiyor, sayfa verisinden
+        log(cid, "Fotoğraf gönderisi indiriliyor")
+        if _fotograflar(cid, link, hedef):
+            return hedef
+        raise RuntimeError("Bu fotoğraf gönderisi açılamadı; gizli olabilir.")
     log(cid, "Video indiriliyor")
     temel = [YTDLP, "--no-playlist", "--no-warnings", "-q", "-f", "bv*[height<=1920][ext=mp4]+ba[ext=m4a]/bv*[height<=1920]+ba/b",
              "--merge-output-format", "mp4", "--write-info-json", "--write-thumbnail", "--convert-thumbnails", "jpg",
@@ -204,8 +209,11 @@ def _indir(cid, link):
             break
         son = (r.stderr or "").strip()[-300:]
     if not hedef.exists():
-        if "No video formats found" in son:
-            raise RuntimeError("Bu gönderide video yok; bir fotoğraf ya da fotoğraf dizisi olabilir. Bir video linki yapıştırın.")
+        if "No video formats found" in son or "image" in son.lower():
+            log(cid, "Bu gönderide video yok; fotoğraflar alınıyor")
+            if _fotograflar(cid, link, hedef):                       # fotoğraf gönderisi (Instagram/TikTok): görseller slayt olarak aynı hattan geçer
+                return hedef
+            raise RuntimeError("Bu gönderide video yok ve fotoğrafları alınamadı. Gönderi gizli olabilir.")
         if re.search(r"private|login|log in|sign in|age", son, re.I):
             raise RuntimeError("Bu video gizli ya da yalnız giriş yapanlara açık; indirilemedi. Ayarlar'dan tarayıcı oturumunu açıp yeniden deneyin."
                                if not tarayici else "Bu video gizli ya da yalnız giriş yapanlara açık; indirilemedi.")
@@ -213,6 +221,74 @@ def _indir(cid, link):
             raise RuntimeError("Bu video kaldırılmış ya da artık açılmıyor.")
         raise RuntimeError("Video indirilemedi. Linkin herkese açık bir videoya ait olduğundan emin olun.")
     return hedef
+
+
+FOTO_SN = 3.0        # slaytta her görselin süresi
+
+
+def _fotograflar(cid, link, hedef):
+    """Fotoğraf gönderisi (TikTok photo, Instagram görsel): görseller `kaynak_foto/` klasörüne, sonra her biri FOTO_SN saniyelik sessiz bir slayt
+    videosu (kaynak.mp4) olur ki kare, yazı ve karşılaştırma hattı değişmeden çalışsın. `statik.json` görsel listesini tutar. Döner: görsel sayısı."""
+    import requests
+    klasor = yol(cid)
+    foto = klasor / "kaynak_foto"
+    foto.mkdir(exist_ok=True)
+    h = {"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0 Safari/537.36",
+         "Accept-Language": "en-US,en;q=0.9"}
+    urls, baslik, aciklama = [], "", ""
+    try:
+        t = requests.get(link, headers=h, timeout=25).text
+    except Exception:  # noqa: BLE001
+        t = ""
+    m = re.search(r'<script id="__UNIVERSAL_DATA_FOR_REHYDRATION__"[^>]*>(.*?)</script>', t, re.S)
+    if m:                                                         # TikTok: imagePost.images[].imageURL.urlList
+        try:
+            scope = json.loads(m.group(1)).get("__DEFAULT_SCOPE__", {})
+            it = (scope.get("webapp.video-detail") or scope.get("webapp.photo-detail") or {}).get("itemInfo", {}).get("itemStruct", {})
+            for im in (it.get("imagePost") or {}).get("images") or []:
+                u = ((im.get("imageURL") or {}).get("urlList") or [None])[0]
+                if u:
+                    urls.append(u)
+            aciklama, baslik = it.get("desc") or "", (it.get("imagePost") or {}).get("title") or (it.get("desc") or "").split("\n")[0]
+        except Exception:  # noqa: BLE001
+            pass
+    if not urls:                                                  # Instagram ve diğerleri: sayfadaki og:image'lar
+        urls = [x for x in re.findall(r'property="og:image"\s+content="([^"]+)"', t)]
+        mm = re.search(r'property="og:title"\s+content="([^"]*)"', t)
+        baslik = baslik or (mm.group(1) if mm else "")
+    if not urls and (klasor / "kaynak.jpg").exists():            # yt-dlp'nin yazdığı küçük resim
+        urls = [str(klasor / "kaynak.jpg")]
+    dosyalar = []
+    for i, u in enumerate(urls[:12]):
+        f = foto / f"f_{i:02d}.jpg"
+        try:
+            if u.startswith("http"):
+                r = requests.get(u, headers={**h, "Referer": link}, timeout=30)
+                if not r.ok or len(r.content) < 2000:
+                    continue
+                f.write_bytes(r.content)
+            else:
+                shutil.copy(u, f)
+            from PIL import Image
+            Image.open(f).convert("RGB").save(f, quality=90)   # webp/heic → jpg
+            dosyalar.append(f)
+        except Exception:  # noqa: BLE001
+            continue
+    if not dosyalar:
+        return 0
+    girdi = []
+    for f in dosyalar:
+        girdi += ["-loop", "1", "-t", str(FOTO_SN), "-i", str(f)]
+    n = len(dosyalar)
+    fc = "".join(f"[{i}:v]scale=720:1280:force_original_aspect_ratio=decrease,pad=720:1280:(ow-iw)/2:(oh-ih)/2,setsar=1,fps=10[v{i}];" for i in range(n)) \
+        + "".join(f"[v{i}]" for i in range(n)) + f"concat=n={n}:v=1:a=0[v]"
+    subprocess.run([FFMPEG, "-y", "-v", "error", *girdi, "-filter_complex", fc, "-map", "[v]", "-pix_fmt", "yuv420p", str(hedef)], capture_output=True, timeout=300)
+    if not hedef.exists():
+        return 0
+    (klasor / "statik.json").write_text(json.dumps({"gorseller": [f.name for f in dosyalar], "baslik": baslik[:140], "aciklama": aciklama[:600], "sn": FOTO_SN},
+                                                    ensure_ascii=False), encoding="utf-8")
+    shutil.copy(dosyalar[0], klasor / "kapak.jpg")
+    return n
 
 
 def _kareler(video, sahneler, klasor, en_cok=40):
@@ -358,9 +434,17 @@ def cozumle(cid, planla_da=True):
         kapak_yap(video, klasor / "kapak.jpg", b["sure"])
     if d.get("kanit_sakla"):     # deneme: sahibin/platformun söylediği gizlenir; yöntem yalnız videodan bulunmalı (content_test)
         inf = {k: v for k, v in inf.items() if k not in ("description", "title", "tags", "fulltitle", "uploader", "channel", "uploader_id", "channel_id")}
+    statik = {}
+    try:
+        statik = json.loads((klasor / "statik.json").read_text(encoding="utf-8"))     # fotoğraf gönderisi: görseller slayt olarak işlenir
+    except Exception:  # noqa: BLE001
+        pass
+    if statik and not d.get("kanit_sakla"):
+        inf = {**inf, "title": statik.get("baslik") or inf.get("title"), "description": statik.get("aciklama") or inf.get("description")}
     kaynak = {"baslik": (inf.get("description") or inf.get("title") or "").split("\n")[0][:140] or ("(gizli)" if d.get("kanit_sakla") else Path(d["link"]).name),
               "kanal": inf.get("uploader") or inf.get("channel") or "", "aciklama": (inf.get("description") or "")[:600],
-              "begeni": inf.get("like_count"), "izlenme": inf.get("view_count"), **b}
+              "begeni": inf.get("like_count"), "izlenme": inf.get("view_count"), **b,
+              **({"statik": len(statik.get("gorseller") or []), "statik_sn": statik.get("sn") or FOTO_SN} if statik else {})}
     guncelle(cid, kaynak=kaynak)
 
     if not d.get("tarif"):
@@ -373,7 +457,10 @@ def cozumle(cid, planla_da=True):
             except Exception:  # noqa: BLE001
                 pass
         log(cid, "Sahneler ayrılıyor")
-        kesim = [k for k in _kesmeler(video) if 0.3 < k < b["sure"] - 0.3]
+        if kaynak.get("statik"):                                 # her görsel bir sahne; sahne tespiti gereksiz
+            kesim = [round(i * kaynak["statik_sn"], 2) for i in range(1, kaynak["statik"])]
+        else:
+            kesim = [k for k in _kesmeler(video) if 0.3 < k < b["sure"] - 0.3]
         sinirlar = [0.0] + kesim + [b["sure"]]
         sahneler = [{"no": i + 1, "bas": round(sinirlar[i], 2), "bit": round(sinirlar[i + 1], 2)} for i in range(len(sinirlar) - 1)]
         log(cid, "Kareler inceleniyor")

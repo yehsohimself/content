@@ -15,6 +15,7 @@ from pathlib import Path
 import content as C
 import content_araclar as A
 import content_dogrulama as D
+import content_benzer as B
 import content_kanit as K
 
 ISTEM = """Bir video yapım uzmanısın. Aşağıdaki viral videonun NASIL YAPILDIĞINI çözeceksin ve bunu hiç video düzenlememiş birine
@@ -42,13 +43,19 @@ güçlü olamaz; filigran ya da sayfa bilgisiyle örtüşürse güçlenir): {olc
 ARAÇ TANIMA DEFTERİ (her aracın videoda bıraktığı izler; filigranı karelerde bu tariflere göre ara, süre ve boyutu ölçülen izlerle karşılaştır):
 {defter}
 KÜTÜPHANEDE AYNI SES (kullanıcının daha önce çözdürdüğü, AYNI sesi taşıyan videolar; aynı ses çoğu zaman aynı akım demektir): {kutuphane}
+BENZER VİDEOLAR (aynı şarkı/akım/şablon adıyla bulunup İNDİRİLİP ÖLÇÜLDÜ: ses zarfı benzerliği 0-1, görüntü parmak izi benzerliği 0-1;
+ekte her biri için üst sıra bu video, alt sıra benzer video olmak üzere yan yana kare şeritleri var): {benzer}
+Bunlardan yöntem okunur: ses AYNI + görüntü FARKLI = aynı sese/kalıba herkes kendi görüntüsünü koyuyor (şablon, akım, hareket aktarma, yüz değiştirme);
+ses aynı + görüntü AYNI = birebir yeniden paylaşım ya da aynı kaynağın küçük bir düzenlemesi; ses farklı + görüntü çok benzer = aynı görüntüye yeni ses (dublaj,
+seslendirme, replik değiştirme). Kopyalar arasında SABİT kalan şey şablon/akımdır, DEĞİŞEN şey yapanın kattığıdır.
+KAYNAK TÜRÜ: {statik}
 
 YORUMLAR (izleyicilerin; zayıf kanıt: şaka, reklam, yanlış bilgi olabilir; birden çok kişinin aynı şeyi söylemesi ve VİDEO SAHİBİ'nin
 yanıtı daha değerlidir): {yorumlar}
 
 Ekte videodan sırayla KARE IZGARALARI var: her ızgara bir sahnenin (ya da uzun sahnenin bir parçasının) sık aralıklı kareleri, soldan sağa,
 yukarıdan aşağı; her karenin köşesinde "S<sahne no> · <saniye>s" yazar. Hareketi kareler ARASINDAKİ değişimden oku (kim nereye gidiyor, top/nesne
-nereye gidiyor, kamera kayıyor mu). Son {uc} resim videonun İLK ANI ve SON 2 SANİYESİDİR:
+nereye gidiyor, kamera kayıyor mu). Ardından benzer videoların yan yana kare şeritleri ({serit} resim; üst sıra bu video, alt sıra benzer video). Son {uc} resim videonun İLK ANI ve SON 2 SANİYESİDİR:
 köşelerde araç filigranı/logosu (CapCut, Kling, Hailuo, Sora, Vidu, Pika, Runway, Veo ✦, Meta AI, Remini…) ya da bitiş kartı ara;
 görürsen kanıt olarak yaz. Filigran olmaması bir şey kanıtlamaz (ücretli sürüm ya da silinmiş olabilir).
 
@@ -125,6 +132,7 @@ JSON döndür:
  "sik_hatalar": ["en çok 3"],
  "sizin_icin": "kullanıcının notuna (varsa) göre nasıl uyarlanır; not yoksa boş",
  "emin_olmadiklarim": ["kesin bilmediğin noktalar; uydurma yapma"],
+ "degisen_katmanlar": {{"kaynak": "video | fotograf | yapay (sıfırdan üretilmiş) | ekran_kaydi", "kisiler": "aynen | degistirilmis | eklenmis | yok", "ses": "ozgun (görüntünün kendi sesi) | sarki | dublaj (görüntüye sonradan konuşma/ses) | sessiz", "ortam": "aynen | degistirilmis | yapay", "hareket": "ozgun | aktarilmis (başka bir anın hareketi) | durağan", "ozet": "tek cümle: bu videoda ne değiştirilmiş, ne aynen kalmış"}},
  "kaynak_klip": {{"olasi": true, "ne": "orijinal an, ör. 'Mesut Özil'in Ludogorets'e attığı gol' ya da boş", "neden": "kısa", "eylem": "videodaki ana fiziksel hareketin İngilizce kısa adı; HER ZAMAN doldur (olasi false olsa da)", "arama": ["YouTube'da orijinal anı bulacak 1-2 arama (harekete göre)"]}},
  "ogretici_aramalari": ["YouTube'da bu videonun aynısını yapmayı öğreten videoyu bulacak 2-3 arama: akımın/şablonun/efektin adı + 'tutorial' ya da 'how to'; biri İngilizce, biri videonun dilinde"]
 }}"""
@@ -140,6 +148,8 @@ KANIT (videodan): {kanit}
 
 KAYNAK KLİP ADAYLARI (videonun hareketi bilinen gerçek bir andan aktarılmış olabilir; YouTube'da bulunan orijinal an adayları):
 {kaynak}
+
+BENZER VİDEOLAR (ölçülmüş; ekte yan yana şerit varsa ilk benzer video için): {benzer}
 
 TASLAK: {taslak}
 
@@ -170,6 +180,7 @@ Kurallar:
   ortaklık/indirim linkiyle önerdiği araç 'reklam'dır, 'sahip' değil (videonun onunla yapıldığını söylemedikçe); öğretici ya da web bir aracı
   adlandırdıysa dayanağı ogretici/web yap. Yalnız görüntüye dayanan model adını "örneğin" diye ver.
 - 'hareket_tutanagi'nı koru; karelerle çelişen satırı düzelt.
+- 'degisen_katmanlar' (kaynak, kişiler, ses, ortam, hareket) kanıtla tutarlı olsun: BENZER VİDEOLAR ölçümü 'ses aynı, görüntü farklı' diyorsa kişiler/ortam değiştirilmiş demektir; 'ses farklı, görüntü benzer' diyorsa ses sonradan konmuştur. Fotoğraf gönderisinde hareket 'durağan'.
 - 'baslik' (3-7 kelime, sade) ve araçların KISA 'ad' + 'ornek' biçimini koru; uzun araç adını kısalt, örnekleri 'ornek'e taşı. Adımlar sıradan
   bir telefon kullanıcısının anlayacağı dilde: teknik terim yok, her adım tek iş, düğme adı ekranda görüneceği gibi.
 - 'guven': yalnız açık kanıt (ör. açıklamada 'CapCut template', ekranda şablon bağlantısı) varsa 'yuksek'.
@@ -203,7 +214,8 @@ def sayfa_kaniti(link):
                                                        "sablon_id": ek.get("template_id"), "ucretli": bool(ek.get("cc_template_pay_type"))})
             mu = it.get("music") or {}
             if mu:
-                k["muzik"] = {"ad": mu.get("title"), "sahibi": mu.get("authorName"), "ozgun_ses": mu.get("original")}
+                k["muzik"] = {"ad": mu.get("title"), "sahibi": mu.get("authorName"), "ozgun_ses": mu.get("original"), "kimlik": mu.get("id"),
+                              "ses_dosyasi": mu.get("playUrl") or ""}      # özgün ses dosyası: content_benzer videonun sesiyle karşılaştırır
             ef = [e.get("name") for e in it.get("effectStickers") or [] if e.get("name")]
             if ef:
                 k["efektler"] = ef
@@ -601,16 +613,30 @@ def coz(cid):
             print(f"[content {cid}] replik araması yapılamadı: {e}", flush=True)
         if replik:
             C.log(cid, f"Konuşmanın kaynağı bulundu: {replik.get('eser')} {replik.get('yil') or ''}".strip())
-    C.guncelle(cid, sayfa_kaniti=sayfa, yorumlar=yorum, dosya_etiketleri=dosya, kutuphane_eslesme=kutup, sarki=sarki, web_trend=web, replik=replik)
+    C.log(cid, "Aynı sesle ya da aynı kalıpla yapılmış başka videolar aranıp karşılaştırılıyor")
+    benzerler, ozgun = [], {}
+    try:
+        ozgun = {} if sakla else B.ozgun_ses(cid, sayfa)
+        benzerler = B.karsilastir(cid, sarki, web, {} if sakla else sayfa)
+    except Exception as e:  # noqa: BLE001
+        print(f"[content {cid}] benzer video karşılaştırması yapılamadı: {e}", flush=True)
+    if benzerler:
+        C.log(cid, f"{len(benzerler)} benzer video karşılaştırıldı; en yakını: {benzerler[0]['yorum']}")
+    C.guncelle(cid, sayfa_kaniti=sayfa, yorumlar=yorum, dosya_etiketleri=dosya, kutuphane_eslesme=kutup, sarki=sarki, web_trend=web, replik=replik,
+               benzerler=[{a: b.get(a) for a in ("link", "baslik", "kanal", "sure", "ses", "gorsel", "gorsel_en", "yorum")} for b in benzerler], ozgun_ses=ozgun)
+    seritler = [b["serit"] for b in benzerler if b.get("serit")][:2]
     istem = ISTEM.format(
         sayfa=json.dumps(sayfa, ensure_ascii=False)[:2400] if sayfa else "(yok)",
         dosya=json.dumps(dosya, ensure_ascii=False)[:400] if dosya else "(yok)",
-        yorumlar=json.dumps(yorum, ensure_ascii=False)[:3000] if yorum else "(yok)", uc=len(uc),
+        yorumlar=json.dumps(yorum, ensure_ascii=False)[:3000] if yorum else "(yok)", uc=len(uc), serit=len(seritler),
         sarki=json.dumps(sarki, ensure_ascii=False) if sarki else "(bulunamadı)",
         web=json.dumps(web, ensure_ascii=False)[:2500] if web else "(bulunamadı)",
         replik=json.dumps(replik, ensure_ascii=False)[:1500] if replik else ("(konuşma kısa, aranmadı)" if len(_kelimeler(t.get("ses_yazisi"))) < 15 else "(web'de bulunamadı)"),
         modeller="\n".join(guncel_modeller()[:70])[:6000] or "(okunamadı)",
         kutuphane=json.dumps(kutup, ensure_ascii=False)[:2500] if kutup else "(yok)",
+        benzer=B.istem_metni(benzerler, ozgun)[:3000],
+        statik=(f"FOTOĞRAF GÖNDERİSİ: {k['statik']} görsel (video değil; kareler görsellerin kendisi, her görsel {k.get('statik_sn', 3)} sn'lik slayt, ses yok). Hareket arama; yöntem fotoğraf düzenleme, yapay zekâ görseli, kolaj ya da filtre olabilir; adımlar fotoğraf uygulamasına göre."
+                if k.get("statik") else "video"),
         baslik=k.get("baslik") or "-", kanal=k.get("kanal") or "-", aciklama=aciklama or "-",
         sure=float(k.get("sure") or 0), w=k.get("w") or 0, h=k.get("h") or 0,
         sahneler=", ".join(f"{s['no']}: {s['bas']:.1f}-{s['bit']:.1f} sn {s.get('aciklama') or ''}" for s in t.get("sahneler") or [])[:2500],
@@ -626,7 +652,7 @@ def coz(cid):
     except Exception as e:  # noqa: BLE001
         print(f"[content {cid}] ızgara çıkarılamadı: {e}", flush=True)
         izg = []
-    goruntu = izg or _kareler(cid, 16)
+    goruntu = (izg or _kareler(cid, 16)) + [Path(x) for x in seritler]
     y = claude_yaz.json_coz(claude_yaz.sor_gorsel(istem, [str(x) for x in goruntu + uc], model_adi="opus"))
     if not y or not y.get("adimlar"):
         raise RuntimeError("Yapılış yöntemi çıkarılamadı (yanıt okunamadı).")
@@ -671,9 +697,9 @@ def coz(cid):
         kaynak_metin += (f"\nEkteki resimlerin SON {len(kucukler)} tanesi bu adayların küçük resimleri (sırayla: "
                          + ", ".join(a["baslik"][:60] for a in kucukler) + "). Videonun karelerindeki hareket/kompozisyonla karşılaştır.")
     try:
-        y2 = claude_yaz.json_coz(claude_yaz.sor_gorsel(DENETIM.format(kanit=kanit, ogretici=ogr_metin, kaynak=kaynak_metin,
+        y2 = claude_yaz.json_coz(claude_yaz.sor_gorsel(DENETIM.format(kanit=kanit, ogretici=ogr_metin, kaynak=kaynak_metin, benzer=B.istem_metni(benzerler, ozgun)[:2000],
                                                                       taslak=json.dumps(y, ensure_ascii=False)) + (DIL_EN if d.get("dil") == "en" else ""),
-                                                       [str(x) for x in (izg[:6] or _kareler(cid, 8)) + uc] + [a["kucuk"] for a in kucukler], model_adi="opus"))
+                                                       [str(x) for x in (izg[:6] or _kareler(cid, 8)) + uc] + seritler[:1] + [a["kucuk"] for a in kucukler], model_adi="opus"))
         if y2 and y2.get("adimlar"):
             y = y2
     except Exception as e:  # noqa: BLE001
