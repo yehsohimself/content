@@ -168,3 +168,15 @@ def test_tiktok_fotograf_sayfasi_ayristirilir(kok, tmp_path):
     st = json.loads((content.yol(cid) / "statik.json").read_text(encoding="utf-8"))
     assert st["baslik"] == "Kolaj" and st["aciklama"] == "deneme #ai" and len(st["gorseller"]) == 2
     assert abs(content.bilgi(content.yol(cid) / "kaynak.mp4")["sure"] - 2 * content.FOTO_SN) < 0.6
+
+
+def test_sohbet_yaniti_ayrilir_ve_bos_mesaj_reddedilir(istemci, kok):
+    import content_sohbet
+    metin, sec, ey = content_sohbet.ayir('Olur.\n@@ {"secenekler": ["Telefonda", "Bilgisayarda"], "eylem": {"tur": "yeniden", "istek": "Telefonda yapacağım", "etiket": "Telefona göre yaz"}}')
+    assert metin == "Olur." and sec == ["Telefonda", "Bilgisayarda"] and ey["tur"] == "yeniden" and ey["istek"]
+    assert content_sohbet.ayir('Bilmiyorum.\n@@ {"eylem": {"tur": "sil"}}')[2] is None        # bilinmeyen eylem atılır
+    assert content_sohbet.ayir("Düz yanıt")[0] == "Düz yanıt"
+    cid = _sahte_is(kok, "abcdef0123")
+    assert istemci.post(f"/api/content/{cid}/sohbet", json={"mesaj": " "}).status_code == 400
+    assert istemci.post("/api/content/sohbet", json={}).status_code == 400
+    assert istemci.delete(f"/api/content/{cid}/sohbet").status_code == 200

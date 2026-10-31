@@ -8,11 +8,12 @@ import threading
 import time
 import traceback
 
-from flask import abort, jsonify, request, send_from_directory
+from flask import Response, abort, jsonify, request, send_from_directory
 
 import content
 
 calisan = {}                      # cid -> aşama
+_kare_sira = threading.BoundedSemaphore(2)     # sahne şeridi aynı anda 20 kare isteyebilir; ffmpeg'ler sıraya girer
 _kilit = threading.Lock()
 
 
@@ -82,8 +83,9 @@ def _kesilenleri_isaretle():
 
 
 def _dis(d):
-    d = {k: v for k, v in d.items() if k not in ("bulut_istekleri", "bulut_dosyalari", "kare_notlari", "yorumlar")}
-    d["log"] = (d.get("log") or [])[-8:]
+    d = {k: v for k, v in d.items() if k not in ("bulut_istekleri", "bulut_dosyalari", "kare_notlari")}
+    d["log"] = (d.get("log") or [])[-30:]
+    d["yorum_sayisi"] = len(d.pop("yorumlar", None) or [])
     if d.get("tarif"):
         d["tarif"] = {k: v for k, v in d["tarif"].items() if k != "ses_yazisi"}
     d["calisiyor"] = d["id"] in calisan
@@ -195,6 +197,87 @@ def kaydet(app):
     @app.post("/api/content/ayar")
     def content_ayar_yaz():
         return jsonify(content.ayar_yaz(request.get_json(silent=True) or {}))
+
+    def _sohbet_akisi(d, mesaj, gecmis, dil, cid=None):
+        """Content'in yanıtı akarak gider; bitince geçmişe yazılır. Hata `\x00HATA:` ile."""
+        import content_sohbet
+
+        def uret():
+            parca = []
+            try:
+                for p in content_sohbet.akis(d, mesaj, gecmis, dil):
+                    parca.append(p)
+                    yield p
+            except Exception as e:  # noqa: BLE001
+                yield "\x00HATA:" + str(e)[:300]
+                return
+            if cid:
+                try:
+                    metin, sec, ey = content_sohbet.ayir("".join(parca))
+                    content_sohbet.kaydet(cid, mesaj, metin, sec, ey)
+                except Exception:  # noqa: BLE001
+                    traceback.print_exc()
+        r = Response(uret(), mimetype="text/plain")
+        r.headers["Cache-Control"] = "no-store"
+        r.headers["X-Accel-Buffering"] = "no"
+        return r
+
+    @app.post("/api/content/sohbet")
+    def content_genel_sohbet():
+        v = request.get_json(silent=True) or {}
+        mesaj = str(v.get("mesaj") or "").strip()[:2000]
+        if not mesaj:
+            return jsonify({"hata": "Bir şey yazın."}), 400
+        gecmis = [m for m in (v.get("gecmis") or []) if isinstance(m, dict)][-14:]
+        return _sohbet_akisi(None, mesaj, gecmis, _dil(v))
+
+    @app.post("/api/content/<cid>/sohbet")
+    def content_sohbet(cid):
+        try:
+            d = content.oku(cid)
+        except ValueError:
+            abort(404)
+        if not d or d.get("silindi"):
+            abort(404)
+        v = request.get_json(silent=True) or {}
+        mesaj = str(v.get("mesaj") or "").strip()[:2000]
+        if not mesaj:
+            return jsonify({"hata": "Bir şey yazın."}), 400
+        return _sohbet_akisi(d, mesaj, d.get("sohbet") or [], _dil(v or d), cid)
+
+    @app.delete("/api/content/<cid>/sohbet")
+    def content_sohbet_sil(cid):
+        if not content.oku(cid):
+            abort(404)
+        content.degistir(cid, lambda d: d.pop("sohbet", None))
+        return jsonify({"ok": True})
+
+    @app.get("/content-an/<cid>/<sn>.jpg")
+    def content_an(cid, sn):
+        """Videonun istenen saniyesinden temiz bir kare (sahne şeridi ve canlı inceleme için); is_ara/an_<ms>.jpg önbellek."""
+        import subprocess
+        try:
+            kok = content.yol(cid)
+            t = float(sn)
+        except ValueError:
+            abort(404)
+        video = kok / "kaynak.mp4"
+        sure = float(((content.oku(cid) or {}).get("kaynak") or {}).get("sure") or 0)
+        if not video.exists() or not (0 <= t <= max(sure, 0.5) + 0.5):
+            abort(404)
+        hedef = kok / "is_ara" / f"an_{int(round(t * 10)):06d}.jpg"
+        if not hedef.exists():
+            hedef.parent.mkdir(parents=True, exist_ok=True)
+            with _kare_sira:
+                if not hedef.exists():
+                    try:
+                        subprocess.run([content.FFMPEG, "-y", "-loglevel", "error", "-ss", f"{min(t, max(0.0, sure - 0.1)):.2f}", "-i", str(video), "-frames:v", "1",
+                                        "-vf", "scale=360:-2", "-q:v", "4", str(hedef)], capture_output=True, timeout=60)
+                    except subprocess.TimeoutExpired:
+                        hedef.unlink(missing_ok=True)
+        if not hedef.exists():
+            abort(404)
+        return send_from_directory(str(hedef.parent), hedef.name, max_age=86400)
 
     @app.get("/content-dosya/<cid>/<path:yol>")
     def content_dosya(cid, yol):
