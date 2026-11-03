@@ -12,6 +12,7 @@ Elle: python content_test.py [--kutuphanesiz] [--yeni] [sıra no | ad parçası 
   --kutuphanesiz: kütüphanedeki eski çözümler kullanılmaz.  --yeni: yalnız hiç denenmemiş kayıtlar.
 """
 import json
+import os
 import shutil
 import sys
 import time
@@ -149,4 +150,21 @@ def ozet(son=True):
 
 if __name__ == "__main__":
     a = sys.argv[1:]
+    # Claude dengeleyicisi (2026-10-31): deneme seti Content'in haftalık kendiliğinden turudur; kullanıcı açıkça isterse --zorla
+    if "--zorla" in a:
+        os.environ["VH_CLAUDE_TUR"] = "siz"
+    else:
+        try:
+            import time as _t
+            import claude_butce
+            hd = claude_butce.haftalik_durum("content")
+            if not hd["izin"]:
+                print("Deneme seti haftada bir çalışır; sonraki tur " + _t.strftime("%d.%m %H:%M", _t.localtime(hd["sonraki"]))
+                      + ". Şimdi çalıştırmak için: --zorla")
+                sys.exit(0)
+            if not claude_butce.arka_plan_uygun("content"):
+                print("Claude aboneliği şu an sıkışık (" + claude_butce.seviye()["neden"] + "); deneme seti bekliyor. Zorlamak için: --zorla")
+                sys.exit(0)
+        except ImportError:
+            pass
     calistir([x for x in a if not x.startswith("--")] or None, "--kutuphanesiz" in a, "--yeni" in a)

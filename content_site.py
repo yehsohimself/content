@@ -24,8 +24,10 @@ def mesgul():
 
 def _arka(cid, asama, is_, *arg):
     def kos():
+        import claude_yaz
         try:
-            is_(*arg)
+            with claude_yaz.kullanici_isi():                 # sizin verdiğiniz iş: Claude dengeleyicisi bekletmez
+                is_(*arg)
         except Exception as e:  # noqa: BLE001
             traceback.print_exc()
             content.guncelle(cid, durum="hata", hata=(str(e) or type(e).__name__)[:400], hata_asama=asama)
@@ -41,6 +43,11 @@ def _arka(cid, asama, is_, *arg):
 
 
 def _bildir(metin, baslik="Content"):
+    try:
+        import bildirimler
+        bildirimler.kaydet(baslik, metin, "content", "http://127.0.0.1:8769/")
+    except Exception:  # noqa: BLE001
+        pass
     try:
         import subprocess
         tr = lambda s: str(s).replace("\\", " ").replace('"', " ").replace("\n", " ")[:220]   # AppleScript kaçış dizilerini tanımıyor
@@ -214,7 +221,7 @@ def kaydet(app):
             if cid:
                 try:
                     metin, sec, ey = content_sohbet.ayir("".join(parca))
-                    content_sohbet.kaydet(cid, mesaj, metin, sec, ey)
+                    content_sohbet.kaydet(cid, mesaj, metin, sec, ey, content_sohbet.sorular_ayir("".join(parca)))
                 except Exception:  # noqa: BLE001
                     traceback.print_exc()
         r = Response(uret(), mimetype="text/plain")

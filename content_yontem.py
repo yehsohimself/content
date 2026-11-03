@@ -12,6 +12,7 @@ import json
 import re
 from pathlib import Path
 
+import claude_yaz
 import content as C
 import content_araclar as A
 import content_dogrulama as D
@@ -598,7 +599,8 @@ def coz(cid):
     bilinen = " / ".join(x for x in [k.get("baslik"), (sayfa.get("aciklama") or aciklama)[:300], (t.get("ozet") or "")[:300],
                                      "yapay zekâ etiketi var" if (sayfa.get("yapay_zeka_etiketi") or sayfa.get("yapay_zeka_etiket_turu")) else ""] if x)
     try:
-        web = K.web_trend(sarki, sayfa.get("tiktok_onerilen_aramalar") or [], bilinen=bilinen, dil=d.get("dil") or "tr")
+        with claude_yaz.iz(lambda o: C.log(cid, o["m"])):
+            web = K.web_trend(sarki, sayfa.get("tiktok_onerilen_aramalar") or [], bilinen=bilinen, dil=d.get("dil") or "tr")
     except Exception as e:  # noqa: BLE001
         print(f"[content {cid}] web araması yapılamadı: {e}", flush=True)
         web = {}
@@ -608,7 +610,8 @@ def coz(cid):
     if len(_kelimeler(t.get("ses_yazisi"))) >= 15:
         C.log(cid, "Konuşmanın hangi film ya da diziden geldiği aranıyor")
         try:
-            replik = K.replik_ara(t.get("ses_yazisi"), bilinen=bilinen, dil=d.get("dil") or "tr")
+            with claude_yaz.iz(lambda o: C.log(cid, o["m"])):
+                replik = K.replik_ara(t.get("ses_yazisi"), bilinen=bilinen, dil=d.get("dil") or "tr")
         except Exception as e:  # noqa: BLE001
             print(f"[content {cid}] replik araması yapılamadı: {e}", flush=True)
         if replik:

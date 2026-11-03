@@ -10,6 +10,8 @@ import json
 import re
 import time
 
+import ortak
+
 import content as C
 
 GECMIS = 14
@@ -27,7 +29,8 @@ Nasıl konuşursun:
   "duzeltme" eylemi öner. Kullanıcı rehberin farklı bir yolla (telefonda, ücretsiz, kendi kedisiyle) yazılmasını istiyorsa kısaca nasıl değişeceğini
   söyle ve "yeniden" eylemi öner. Eylemi kendin yapmış gibi konuşma; kullanıcı düğmeye basınca olur.
 Yanıtının EN SON satırı tam olarak şu biçimde olsun (başka bir şey ekleme, kod bloğu kullanma):
-@@ {"secenekler": ["kullanıcının tek dokunuşla verebileceği 0-4 kısa cevap ya da sonraki soru"], "eylem": null}
+@@ {"secenekler": ["kullanıcının tek dokunuşla verebileceği 0-4 kısa cevap ya da sonraki soru"], "sorular": [], "eylem": null}
+sorular: __SORU_KARTI__
 eylem yalnız gerekiyorsa: {"tur": "yeniden", "istek": "rehberin yeniden yazılacağı istek, kullanıcının ağzından tek cümle", "etiket": "düğme yazısı (2-4 kelime)"}
 ya da {"tur": "duzeltme", "not": "videonun gerçeği, kullanıcının söylediği", "etiket": "düğme yazısı"}.
 Karşı soru sorduysan seçenekler o sorunun cevapları olsun; sormadıysan kullanıcının sorabileceği 2-3 doğal sonraki soru."""
@@ -108,7 +111,7 @@ def akis(d, soru, gecmis=None, dil="tr"):
     if not claude_yaz.hazir():
         raise RuntimeError("Claude şu an kullanılamıyor; biraz sonra yeniden deneyin.")
     konusma = "\n".join(f"{'KULLANICI' if m.get('rol') == 'ben' else 'SEN'}: {m.get('metin', '')}" for m in (gecmis or [])[-GECMIS:])
-    sistem = SISTEM + ("\n" + GENEL_EK if d is None else "") + ("\nKullanıcıya İngilizce yanıt ver; @@ satırındaki metinler de İngilizce olsun." if dil == "en" else "")
+    sistem = SISTEM.replace("__SORU_KARTI__", ortak.SORU_KARTI_ISTEM) + ("\n" + GENEL_EK if d is None else "") + ("\nKullanıcıya İngilizce yanıt ver; @@ satırındaki metinler de İngilizce olsun." if dil == "en" else "")
     istem = ((("İNCELEME BULGULARI:\n" + baglam(d)) if d else "(incelenmiş video yok)")
              + ("\n\nŞİMDİYE KADARKİ SOHBET:\n" + konusma if konusma else "") + f"\n\nKULLANICININ YENİ MESAJI: {soru}")
     try:
@@ -117,12 +120,23 @@ def akis(d, soru, gecmis=None, dil="tr"):
         raise RuntimeError(f"Claude yanıt veremedi: {e}") from e
 
 
-def kaydet(cid, ben, yanit, secenekler, eylem):
+def kaydet(cid, ben, yanit, secenekler, eylem, sorular=None):
     now = time.time()
 
     def f(d):
         L = d.setdefault("sohbet", [])
         L.append({"rol": "ben", "metin": ben, "t": now})
-        L.append({"rol": "content", "metin": yanit, "secenekler": secenekler, "eylem": eylem, "t": time.time()})
+        L.append({"rol": "content", "metin": yanit, "secenekler": secenekler, "sorular": sorular or [], "eylem": eylem, "t": time.time()})
         del L[:-60]
     C.degistir(cid, f)
+
+
+def sorular_ayir(metin):
+    """Yanıtın son satırındaki "sorular" alanı (soru kartı)."""
+    i = metin.rfind(AYRAC)
+    m = re.search(r"\{.*\}", metin[i:], re.S) if i >= 0 else None
+    try:
+        return ortak.soru_karti(json.loads(m.group(0)).get("sorular")) if m else []
+    except ValueError:
+        return []
+

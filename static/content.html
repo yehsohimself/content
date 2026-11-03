@@ -2,6 +2,7 @@
 <html lang="tr">
 <head>
 <meta charset="utf-8">
+<script src="/static/tema.js?v=1"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Content</title>
 <link rel="icon" href="/static/logo/content.svg" type="image/svg+xml">
@@ -20,7 +21,7 @@
 }
 *{box-sizing:border-box}
 html,body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 Geist,-apple-system,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
-body{min-height:100vh;background-image:radial-gradient(ellipse 70% 40% at 50% -10%,rgba(var(--vurgu-rgb),.13),transparent 70%);background-attachment:fixed}
+body{min-height:100vh;background-image:none;background-attachment:fixed}
 a{color:inherit}
 button{font:inherit;color:inherit;cursor:pointer}
 .hidden{display:none!important}
@@ -53,7 +54,7 @@ main{max-width:760px;margin:0 auto;padding:0 16px 120px}
 /* düğmeler */
 .btn{text-decoration:none;display:inline-block;border:1px solid var(--cizgi);border-radius:99px;padding:12px 20px;font-weight:600;font-size:15px;background:var(--yuzey2);color:var(--ink)}
 .btn:hover{border-color:var(--cizgi2)}
-.btn.ana{background:var(--vurgu);color:var(--vurgu-ink);border-color:transparent;box-shadow:0 10px 30px -10px rgba(var(--vurgu-rgb),.6)}
+.btn.ana{background:var(--vurgu);color:var(--vurgu-ink);border-color:transparent;box-shadow:none}
 .btn.ana:disabled{opacity:.35;box-shadow:none;cursor:not-allowed}
 .btn.buyuk{width:100%;padding:17px 20px;font-size:17px}
 .btn.kucuk{padding:7px 14px;font-size:14px}
@@ -182,7 +183,7 @@ details.ayrinti li{margin:4px 0}
 /* hareketli anlatım (2026-10-31): yapılış şeması, ne değişti, adım yolu, benzer video ölçüsü, inceleme taraması. Nokta ızgarası, ince çizgi, akan tek ışık. */
 .gz{position:relative;background:var(--yuzey);border:1px solid var(--cizgi);border-radius:var(--r);padding:22px 18px 16px;overflow:hidden;
   background-image:radial-gradient(circle,var(--cizgi) 1px,transparent 1.4px);background-size:16px 16px;background-position:-4px -4px}
-.gz::before{content:'';position:absolute;inset:-40% -10% auto;height:70%;background:radial-gradient(ellipse at 50% 0,rgba(var(--vurgu-rgb),.10),transparent 70%);pointer-events:none}
+.gz::before{content:'';position:absolute;inset:-40% -10% auto;height:70%;background:none;pointer-events:none}
 .sema{position:relative;display:flex;align-items:flex-start}
 .sdugum{flex:0 0 auto;width:96px;text-align:center;position:relative;z-index:1}
 .sdugum .ik{width:58px;height:58px;margin:0 auto;border-radius:16px;border:1px solid var(--cizgi2);background:var(--yuzey2) center/cover;display:grid;place-items:center;color:var(--ink2);transition:border-color .5s,box-shadow .5s,color .5s,transform .5s}
@@ -190,13 +191,13 @@ details.ayrinti li{margin:4px 0}
 .sdugum .ik.foto{border-radius:14px}
 .sdugum .ik.foto svg{display:none}
 .sdugum b{display:block;font-size:13.5px;line-height:1.25;margin-top:9px;color:var(--ink2);transition:color .5s}
-.sdugum.on .ik{border-color:var(--vurgu);color:var(--vurgu);box-shadow:0 0 0 4px rgba(var(--vurgu-rgb),.14),0 0 26px rgba(var(--vurgu-rgb),.35);transform:translateY(-2px)}
+.sdugum.on .ik{border-color:var(--vurgu);color:var(--vurgu);box-shadow:0 0 0 4px rgba(var(--vurgu-rgb),.14);transform:translateY(-2px)}
 .sdugum.on b{color:var(--ink)}
 .sdugum b small{display:none;font-weight:400;font-size:13px;color:var(--ink3);margin-top:2px}
 .sdugum.bitti .ik{border-color:rgba(var(--vurgu-rgb),.45);color:var(--ink)}
 .sbag{flex:1 1 auto;min-width:18px;height:58px;position:relative}
 .sbag::before{content:'';position:absolute;left:0;right:0;top:50%;border-top:1px dashed var(--cizgi2)}
-.sbag i{position:absolute;top:50%;left:0;width:8px;height:8px;margin:-4px 0 0 -4px;border-radius:50%;background:var(--vurgu);box-shadow:0 0 10px 2px rgba(var(--vurgu-rgb),.7);opacity:0}
+.sbag i{position:absolute;top:50%;left:0;width:8px;height:8px;margin:-4px 0 0 -4px;border-radius:50%;background:var(--vurgu);box-shadow:none;opacity:0}
 .sbag.on::before,.sbag.gecti::before{border-top-style:solid;border-color:rgba(var(--vurgu-rgb),.55)}
 .sbag.on i{animation:akis 1.5s cubic-bezier(.45,0,.3,1) forwards}
 @keyframes akis{0%{left:0;opacity:0}12%{opacity:1}88%{opacity:1}100%{left:100%;opacity:0}}
@@ -222,7 +223,7 @@ details.ayrinti li{margin:4px 0}
 .iz i{position:absolute;top:50%;width:6px;height:6px;margin:-3px 0 0 -3px;border-radius:50%;background:var(--ink2);animation:gec 3.2s linear infinite;animation-delay:var(--g,0s)}
 @keyframes gec{0%{left:0;opacity:0}10%,90%{opacity:1}100%{left:100%;opacity:0}}
 .dsatir.dg .iz::before{background:linear-gradient(90deg,var(--cizgi2) 0 50%,var(--vurgu) 50%);border:0;height:1.5px;margin-top:-.75px}
-.dsatir.dg .iz b{position:absolute;left:50%;top:50%;width:14px;height:14px;margin:-7px 0 0 -7px;border-radius:4px;transform:rotate(45deg);background:var(--vurgu);box-shadow:0 0 12px rgba(var(--vurgu-rgb),.7);animation:elmas 2.4s ease-in-out infinite;animation-delay:var(--g,0s)}
+.dsatir.dg .iz b{position:absolute;left:50%;top:50%;width:14px;height:14px;margin:-7px 0 0 -7px;border-radius:4px;transform:rotate(45deg);background:var(--vurgu);box-shadow:none;animation:elmas 2.4s ease-in-out infinite;animation-delay:var(--g,0s)}
 .dsatir.dg .iz i{background:var(--vurgu)}
 .degis .dozet{margin:12px 0 0;font-size:14.5px;color:var(--ink2)}
 /* adım yolu: Uygulama › menü › düğme; sıradaki adımda sırayla belirir, son öğeye dokunuş halkası */
@@ -276,11 +277,11 @@ details.ayrinti li{margin:4px 0}
 .nasil .n{width:110px;text-align:center;font-size:13px;color:var(--ink3)}
 .nasil .n i{display:grid;place-items:center;width:40px;height:40px;margin:0 auto 7px;border-radius:12px;border:1px solid var(--cizgi2);color:var(--ink2);transition:all .5s}
 .nasil .n i svg{width:19px;height:19px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
-.nasil .n.on i{border-color:var(--vurgu);color:var(--vurgu);box-shadow:0 0 18px rgba(var(--vurgu-rgb),.35)}
+.nasil .n.on i{border-color:var(--vurgu);color:var(--vurgu);box-shadow:none}
 .nasil .n.on{color:var(--ink)}
 .nasil .bag{flex:0 1 46px;height:40px;position:relative}
 .nasil .bag::before{content:'';position:absolute;left:0;right:0;top:50%;border-top:1px dashed var(--cizgi2)}
-.nasil .bag i{position:absolute;top:50%;left:0;width:6px;height:6px;margin:-3px;border-radius:50%;background:var(--vurgu);box-shadow:0 0 8px rgba(var(--vurgu-rgb),.8);opacity:0}
+.nasil .bag i{position:absolute;top:50%;left:0;width:6px;height:6px;margin:-3px;border-radius:50%;background:var(--vurgu);box-shadow:none;opacity:0}
 .nasil .bag.on i{animation:akis 1.2s ease forwards}
 .ornekler{text-align:center;margin-top:22px}
 .ornekler p{font-size:14px;color:var(--ink3);margin:0 0 8px}
@@ -305,12 +306,13 @@ details.ayrinti li{margin:4px 0}
 .bulgu i svg{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
 .bulgu p{margin:6px 0 0;font-size:15px;line-height:1.45}
 .bulgu small{font-size:12.5px;color:var(--ink3);margin-top:8px;font-variant-numeric:tabular-nums}
-.bulgu.yeni{animation:bel .6s cubic-bezier(.2,.8,.2,1) both}
-.bulgu.son i{border-color:var(--vurgu);color:var(--vurgu);box-shadow:0 0 14px rgba(var(--vurgu-rgb),.35)}
+.bulgu.yeni{animation:bel .5s cubic-bezier(.22,1,.36,1) both}.bulgu.yeni::before{transform-origin:top;animation:belCizgi .55s cubic-bezier(.22,1,.36,1) both;animation-delay:inherit}
+.bulgu.son i{border-color:var(--vurgu);color:var(--vurgu);box-shadow:none}
 .bulgu.dusun p{color:var(--ink3)}
 .bulgu.dusun p::after{content:'';display:inline-block;width:1.2em;text-align:left;animation:uc 1.4s steps(4) infinite}
 @keyframes uc{0%{content:''}25%{content:'.'}50%{content:'..'}75%{content:'...'}}
-@keyframes bel{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@keyframes bel{from{opacity:0;transform:translateY(5px);filter:blur(5px)}to{opacity:1;transform:none;filter:none}}
+@keyframes belCizgi{from{transform:scaleY(0)}}
 .kareserit{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px;scrollbar-width:thin}
 .kareserit figure{margin:0;flex:0 0 96px;animation:bel .6s both;animation-delay:calc(var(--i) * .12s)}
 .kareserit figure span{display:block;aspect-ratio:9/16;border-radius:10px;background:var(--yuzey2) center/cover;border:1px solid var(--cizgi)}
@@ -325,7 +327,7 @@ details.ayrinti li{margin:4px 0}
 .sk::after{content:'';position:absolute;left:0;right:0;bottom:-7px;height:3px;border-radius:99px;background:var(--ink3);opacity:.55}
 .sk.ara::after{background:var(--vurgu);opacity:1}.sk.dis::after{background:var(--turuncu);opacity:.9}
 .sk em{position:absolute;left:5px;top:5px;font-style:normal;font-size:10.5px;font-weight:700;color:#fff;background:rgba(0,0,0,.55);border-radius:6px;padding:0 5px;font-variant-numeric:tabular-nums}
-.okbas{position:absolute;top:0;bottom:6px;width:2px;margin-left:-1px;background:#fff;box-shadow:0 0 10px rgba(var(--vurgu-rgb),.9);border-radius:2px;pointer-events:none;transition:left .25s linear;opacity:0}
+.okbas{position:absolute;top:0;bottom:6px;width:2px;margin-left:-1px;background:#fff;box-shadow:none;border-radius:2px;pointer-events:none;transition:left .25s linear;opacity:0}
 .okbas.on{opacity:1}
 .sacik{display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:baseline;margin-top:10px;min-height:44px}
 .sacik b{font-size:13px;color:var(--vurgu);font-variant-numeric:tabular-nums;white-space:nowrap}
@@ -338,7 +340,7 @@ details.ayrinti li{margin:4px 0}
 .gosterge{text-align:center}
 .gosterge svg{width:170px;height:100px;overflow:visible}
 .gosterge .yay{fill:none;stroke:var(--cizgi2);stroke-width:10;stroke-linecap:round}
-.gosterge .dolu{fill:none;stroke:var(--vurgu);stroke-width:10;stroke-linecap:round;filter:drop-shadow(0 0 6px rgba(var(--vurgu-rgb),.6));transition:stroke-dashoffset 1.4s cubic-bezier(.2,.8,.2,1)}
+.gosterge .dolu{fill:none;stroke:var(--vurgu);stroke-width:10;stroke-linecap:round;filter:none;transition:stroke-dashoffset 1.4s cubic-bezier(.2,.8,.2,1)}
 .gosterge b{display:block;font-size:19px;margin-top:-28px}
 .gosterge small{display:block;color:var(--ink3);font-size:12.5px;margin-top:2px}
 .kgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
@@ -376,10 +378,6 @@ body.shYan .sorBtn{opacity:0;pointer-events:none}
 .msj .bal p{margin:0}.msj .bal p + p,.msj .bal ul{margin-top:7px}
 .msj .bal ul{margin-bottom:0;padding-left:18px}.msj .bal li{margin:3px 0}
 .msj .bal .imlec{display:inline-block;width:7px;height:15px;background:var(--vurgu);vertical-align:-2px;margin-left:2px;animation:nabiz .9s infinite}
-.yaziyor{display:inline-flex;gap:4px;padding:3px 0}
-.yaziyor i{width:7px;height:7px;border-radius:50%;background:var(--ink3);animation:zipla 1.2s infinite}
-.yaziyor i:nth-child(2){animation-delay:.15s}.yaziyor i:nth-child(3){animation-delay:.3s}
-@keyframes zipla{0%,60%,100%{transform:none;opacity:.5}30%{transform:translateY(-5px);opacity:1}}
 .msjek{display:flex;flex-wrap:wrap;gap:6px;margin:2px 0 0 35px}
 .msjek .oneri{font-size:13.5px;padding:6px 12px}
 .msjek .btn{padding:8px 14px;font-size:14px}
@@ -399,7 +397,7 @@ body.shYan .sorBtn{opacity:0;pointer-events:none}
 .perdeSh.acik{opacity:1;pointer-events:auto}
 /* uygulama modu: tam ekran, tek adım */
 .odak{position:fixed;inset:0;z-index:70;background:var(--bg);display:flex;flex-direction:column;animation:bel .35s ease both;
-  background-image:radial-gradient(circle,var(--cizgi) 1px,transparent 1.4px),radial-gradient(ellipse 70% 45% at 50% 0,rgba(var(--vurgu-rgb),.14),transparent 70%);background-size:18px 18px,100% 100%}
+  background-image:radial-gradient(circle,var(--cizgi) 1px,transparent 1.4px);background-size:18px 18px,100% 100%}
 .odak .ou{display:flex;align-items:center;gap:12px;padding:14px 18px;padding-top:calc(14px + env(safe-area-inset-top))}
 .odak .seg{flex:1;display:flex;gap:4px}
 .odak .seg i{flex:1;height:4px;border-radius:99px;background:var(--cizgi2);transition:background .4s}
@@ -470,6 +468,8 @@ body.shYan .sorBtn{opacity:0;pointer-events:none}
 }
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.yol span,.yol em{opacity:1!important}}
 </style>
+<script src="/static/bekleme.js?v=4"></script>
+<script src="/static/soru_karti.js?v=2"></script>
 </head>
 <body>
 <nav class="nav">
@@ -572,7 +572,7 @@ const EN = {
   'Bu aracın kullanıldığına dair kesin kanıt yok; benzer işi yapan bir araç da olabilir.': 'No hard evidence this exact tool was used; a similar tool could have done it.',
   'Orijinal görüntü': 'Original footage', 'İzle ↗': 'Watch ↗', 'Adım adım': 'Step by step', 'Sırayla uygulayın.': 'Follow them in order.',
   'Bitirdiğiniz adımın numarasına dokunun.': 'Tap the number of a step when you finish it.', 'Kolay': 'Easy', 'Orta zorlukta': 'Medium', 'Zor': 'Hard',
-  'Bitti 🎉': 'Done 🎉', 'Yapılmadı olarak işaretle': 'Mark as not done', 'Yaptım': 'Done', 'Sıradaki': 'Next',
+  'Bitti': 'Done', 'İpucu': 'Tip', 'Yapılmadı olarak işaretle': 'Mark as not done', 'Yaptım': 'Done', 'Sıradaki': 'Next',
   'Bu düğmenin adı ekranınızda biraz farklı olabilir; benzerini arayın.': 'This button may be named a little differently on your screen; look for something similar.',
   'Takılırsanız': 'If you get stuck', 'En sık yapılan hatalar.': 'The most common mistakes.',
   'Uğraşmak istemiyor musunuz?': 'Rather not do it yourself?', 'Bu adımları bilgisayarınızda Claude sizin yerinize uygulayabilir.': 'Claude can carry out these steps on your computer.',
@@ -633,6 +633,7 @@ const EN = {
   'Bu videoyu izledim.': 'I watched this video.', 'Videoyu inceliyorum.': 'I am analysing the video.', 'Video yapımıyla ilgili ne merak ediyorsanız sorun.': 'Ask me anything about making videos.',
   'Aklınıza takılanı sorun; gerekirse ben de size sorarım.': 'Ask whatever is on your mind; I may ask you something back.', 'Yapıldı ✓': 'Done ✓',
   'Rehberi yeniden hazırlıyorum.': 'Rewriting the guide.', 'Düzeltmeniz alındı; rehberi yeniden hazırlıyorum.': 'Got your correction; rewriting the guide.', 'Bir şey sorun…': 'Ask something…',
+  'Bulduklarıma bakıyorum': 'Looking at what I found', 'Düşünüyorum': 'Thinking', 'Yanıtı yazıyorum': 'Writing the answer',
   'Sohbeti temizle': 'Clear the chat', 'Content ile sohbet': 'Chat with Content', 'Gönder': 'Send', 'Kaldır': 'Remove', 'Bitti!': 'Done!',
   'Bütün adımları tamamladınız. Sonuç beklediğiniz gibi değilse Content’e sorun; birlikte bakalım.': 'You finished every step. If the result is not what you expected, ask Content and we will look at it together.',
   'Rehbere dön': 'Back to the guide', 'Takıldım': 'I am stuck', 'Yaptım, bitir': 'Done, finish', 'Yaptım, sıradaki': 'Done, next', '← → ile gezinin · Esc ile çıkın': '← → to move · Esc to exit', 'Önceki adım': 'Previous step',
@@ -693,8 +694,7 @@ const json = v => ({method: 'POST', headers: {'Content-Type': 'application/json'
 const kopyala = async (metin, not = 'Kopyalandı.') => { try{ await navigator.clipboard.writeText(metin); toast(not); }catch(e){ toast('Kopyalanamadı.'); } };
 
 /* tema ve ürün değiştirici */
-function temaUygula(){ if (store.get('tema_v20', 'dark') === 'light') document.documentElement.dataset.theme = 'light'; else delete document.documentElement.dataset.theme; }
-temaUygula(); $('#tema').onclick = () => { store.set('tema_v20', store.get('tema_v20', 'dark') === 'light' ? 'dark' : 'light'); temaUygula(); };
+Tema.bagla($('#tema'));
 /* dil düğmesi: TR ↔ EN (sunucuya da yazılır; bildirimler ve yeni rehberler o dilde) */
 $('#dilBtn').textContent = DIL === 'tr' ? 'EN' : 'TR';
 $('#dilBtn').onclick = async () => { const yeni = DIL === 'tr' ? 'en' : 'tr'; store.set('content_dil', yeni);
@@ -718,7 +718,7 @@ $('#ayarBtn').onclick = async () => {
   const esc_ = e => { if (e.key === 'Escape'){ p.remove(); document.removeEventListener('keydown', esc_); } };
   document.addEventListener('keydown', esc_);
 };
-(() => { const U = [['transcript', 'Studio', 8765], ['note', 'Meet', 8766], ['ghost', 'Ghost', 8767], ['content', 'Content', 8769], ['pt', 'Health', 8771], ['ledger', 'Ledger', 8773]];
+(() => { const U = [['transcript', 'Studio', 8765], ['note', 'Meet', 8766], ['ghost', 'Ghost', 8767], ['content', 'Content', 8769], ['pt', 'Health', 8771], ['ledger', 'Money', 8773], ['office', 'Legal', 8772]];
   const m = $('#urunMenu'); m.innerHTML = U.map(([k, a, p]) => `<a href="${location.protocol}//${location.hostname}:${p}/" class="${String(p) === location.port ? 'on' : ''}"><img src="/static/logo/${k}.svg" alt="">${a}</a>`).join('');
   $('#urunBtn').onclick = e => { e.stopPropagation(); m.classList.toggle('acik'); };
   document.addEventListener('click', e => { if (!e.target.closest('#urunBtn,#urunMenu')) m.classList.remove('acik'); });
@@ -881,10 +881,10 @@ function rehberHtml(d, y){
   if (G.length || hazir.length) h += `<div class="bolum"><h2>Size gerekenler</h2><p class="alt">Başlamadan önce bunları hazırlayın.</p>${G.length ? `<div class="gerek">${G.join('')}</div>` : ''}${hazir.length ? `<div class="kart" style="margin-top:10px"><ul class="duz">${hazir.map(x => `<li>${esc(x)}</li>`).join('')}</ul></div>` : ''}</div>`;
   /* adım adım */
   if (n) h += `<div class="bolum"><h2>Adım adım</h2><p class="alt">${[y.sure, {kolay: 'Kolay', orta: 'Orta zorlukta', zor: 'Zor'}[y.zorluk]].filter(Boolean).map(x => `<span>${esc(x)}</span>`).join(' · ') || '<span>Sırayla uygulayın.</span>'}<br><span>Bitirdiğiniz adımın numarasına dokunun.</span></p>
-    <div class="ilerleme"><div class="cubuk"><span style="width:${n ? Math.round(bitti / n * 100) : 0}%"></span></div><b>${bitti === n ? 'Bitti 🎉' : `${bitti} / ${n} adım`}</b></div>
+    <div class="ilerleme"><div class="cubuk"><span style="width:${n ? Math.round(bitti / n * 100) : 0}%"></span></div><b>${bitti === n ? 'Bitti' : `${bitti} / ${n} adım`}</b></div>
     <div class="adimlar">${adimlar.map((a, i) => `<div class="adim ${ok[i] ? 'bitti' : i === simdi ? 'simdi' : ''}"><button class="tik" data-adim="${i}" aria-label="${ok[i] ? 'Yapılmadı olarak işaretle' : 'Yaptım'}">${ok[i] ? '✓' : i + 1}</button><div>
       ${i === simdi ? '<span class="simdirozet">Sıradaki</span>' : ''}<h3>${esc(a.baslik || '')}</h3>${a.nerede ? yolHtml(a.nerede) : ''}<p class="ne">${esc(a.ne_yapilir || '')}</p>
-      ${a.ipucu ? `<p class="ip">💡 ${esc(a.ipucu)}</p>` : ''}${a.emin === false ? '<p class="emin">Bu düğmenin adı ekranınızda biraz farklı olabilir; benzerini arayın.</p>' : ''}${ok[i] ? '' : `<button type="button" class="sorcuk" data-sor="${i}">${IK_SOHBET}Bu adımı sor</button>`}</div></div>`).join('')}</div></div>`;
+      ${a.ipucu ? `<p class="ip"><b>${esc(t('İpucu'))}:</b> ${esc(a.ipucu)}</p>` : ''}${a.emin === false ? '<p class="emin">Bu düğmenin adı ekranınızda biraz farklı olabilir; benzerini arayın.</p>' : ''}${ok[i] ? '' : `<button type="button" class="sorcuk" data-sor="${i}">${IK_SOHBET}Bu adımı sor</button>`}</div></div>`).join('')}</div></div>`;
   if ((y.sik_hatalar || []).length) h += `<div class="bolum"><h2>Takılırsanız</h2><p class="alt">En sık yapılan hatalar.</p><div class="kart"><ul class="duz">${y.sik_hatalar.map(x => `<li>${esc(x)}</li>`).join('')}</ul></div></div>`;
   /* Claude yapabilirse */
   const cy = y.claude_yolu || {}, clVar = cy.mumkun === true || (cy.mumkun !== false && adimlar.some(a => a.kim === 'claude'));
@@ -1141,7 +1141,7 @@ function ayirYanit(m){
   const i = m.lastIndexOf('@@'); if (i < 0) return [m.trim(), [], null];
   let ek = {}; try{ ek = JSON.parse(m.slice(i + 2).trim().replace(/^`+|`+$/g, '')); }catch(e){ const x = m.slice(i).match(/\{[\s\S]*\}/); try{ ek = x ? JSON.parse(x[0]) : {}; }catch(e2){} }
   const ey = ek.eylem && ['yeniden', 'duzeltme'].includes(ek.eylem.tur) ? ek.eylem : null;
-  return [m.slice(0, i).trim(), (ek.secenekler || []).slice(0, 4), ey];
+  return [m.slice(0, i).trim(), (ek.secenekler || []).slice(0, 4), ey, ek.sorular || []];
 }
 function shOneriler(){
   if (SH.genel || !D) return ORNEK_SORULAR.map(t);
@@ -1168,8 +1168,9 @@ function shCiz(akan){
   const son = L.length - 1;
   A.innerHTML = L.map((m, i) => m.rol === 'ben' ? `<div class="msj ben"><div class="bal">${mdHtml(m.metin)}</div></div>`
     : `<div class="msj"><span class="avatar"><img src="/static/logo/content.svg" alt=""></span><div class="bal">${mdHtml(m.metin)}</div></div>
-       ${i === son && !SH.akiyor && ((m.secenekler || []).length || m.eylem) ? `<div class="msjek">${m.eylem ? `<button class="btn ana" data-ey="${i}"${m.eylem.yapildi ? ' disabled' : ''}>${esc(m.eylem.yapildi ? t('Yapıldı ✓') : m.eylem.etiket || '')}</button>` : ''}${(m.secenekler || []).map(q => `<button type="button" class="oneri" data-sh="${esc(q)}">${esc(q)}</button>`).join('')}</div>` : ''}`).join('')
-    + (akan !== undefined ? `<div class="msj"><span class="avatar nefes"><img src="/static/logo/content.svg" alt=""></span><div class="bal">${akan ? mdHtml(akan).replace(/<\/p>$|<\/li><\/ul>$/, m => '<span class="imlec"></span>' + m) : '<span class="yaziyor"><i></i><i></i><i></i></span>'}</div></div>` : '');
+       ${i === son && !SH.akiyor && (m.sorular || []).length ? `<div class="msjek" style="display:block">${SoruKarti.html('ct' + (m.t || i) + (D ? D.id : ''), m.sorular, sohbetGonder)}</div>` : ''}
+       ${i === son && !SH.akiyor && !(m.sorular || []).length && ((m.secenekler || []).length || m.eylem) ? `<div class="msjek">${m.eylem ? `<button class="btn ana" data-ey="${i}"${m.eylem.yapildi ? ' disabled' : ''}>${esc(m.eylem.yapildi ? t('Yapıldı ✓') : m.eylem.etiket || '')}</button>` : ''}${(m.secenekler || []).map(q => `<button type="button" class="oneri" data-sh="${esc(q)}">${esc(q)}</button>`).join('')}</div>` : ''}`).join('')
+    + (akan !== undefined ? `<div class="msj"><span class="avatar nefes"><img src="/static/logo/content.svg" alt=""></span><div class="bal">${akan ? mdHtml(akan).replace(/<\/p>$|<\/li><\/ul>$/, m => '<span class="imlec"></span>' + m) : Bekleme.html('content', (SH.genel ? ['Düşünüyorum', 'Yanıtı yazıyorum'] : ['Bulduklarıma bakıyorum', 'Düşünüyorum', 'Yanıtı yazıyorum']).map(t))}</div></div>` : '');
   A.scrollTop = A.scrollHeight;
 }
 function sohbetAc(o = {}){
@@ -1187,7 +1188,7 @@ async function sohbetGonder(metin){
   metin = String(metin || '').trim(); if (!metin || SH.akiyor) return;
   const tam = SH.baglam ? `[${SH.baglam}] ${metin}` : metin;
   SH.baglam = ''; $('#shBaglam').classList.add('hidden');
-  SH.mesajlar.push({rol: 'ben', metin: tam}); SH.akiyor = true; $('#shGonder').disabled = true; shCiz('');
+  SH.mesajlar.push({rol: 'ben', metin: tam}); SH.akiyor = true; $('#shGonder').disabled = true; Bekleme.basla('content', $('.shKutu')); shCiz('');
   const gecmis = SH.mesajlar.slice(0, -1).slice(-14).map(m => ({rol: m.rol, metin: m.metin}));
   const url = SH.genel ? '/api/content/sohbet' : `/api/content/${D.id}/sohbet`;
   let yanit = '';
@@ -1198,10 +1199,10 @@ async function sohbetGonder(metin){
     for (;;){ const {done, value} = await rd.read(); if (done) break; yanit += dec.decode(value, {stream: true});
       const h = yanit.indexOf('\x00HATA:'); if (h >= 0) throw new Error(yanit.slice(h + 6));
       shCiz(yanit.split('@@')[0]); }
-    const [m, sec, ey] = ayirYanit(yanit);
-    SH.mesajlar.push({rol: 'content', metin: m || t('Bir sorun oldu. Biraz sonra yeniden deneyin.'), secenekler: sec, eylem: ey});
+    const [m, sec, ey, sor] = ayirYanit(yanit);
+    SH.mesajlar.push({rol: 'content', metin: m || t('Bir sorun oldu. Biraz sonra yeniden deneyin.'), secenekler: sec, eylem: ey, sorular: sor});
   }catch(er){ SH.mesajlar.push({rol: 'content', metin: er.message, secenekler: [], eylem: null}); }
-  SH.akiyor = false; $('#shGonder').disabled = false;
+  SH.akiyor = false; $('#shGonder').disabled = false; Bekleme.bitir('content');
   if (SH.genel) store.set('cSohbetGenel', JSON.stringify(SH.mesajlar.slice(-30)));
   else if (D) D.sohbet = SH.mesajlar.map(m => ({...m}));
   shCiz();
@@ -1246,10 +1247,10 @@ function odakCiz(){
   const A = D.yontem.adimlar, n = A.length; let ok = {}; try{ ok = JSON.parse(store.get('cAdim_' + D.id, '{}')); }catch(e){}
   const seg = A.map((_, i) => `<i class="${ok[i] ? 'b' : i === OD.i ? 's' : ''}"></i>`).join('');
   let ic;
-  if (OD.i >= n) ic = `<div class="okart bitis"><div class="kutla">🎉</div><h2>Bitti!</h2><p class="one">${esc(t('Bütün adımları tamamladınız. Sonuç beklediğiniz gibi değilse Content’e sorun; birlikte bakalım.'))}</p></div>`;
+  if (OD.i >= n) ic = `<div class="okart bitis"><h2>Bitti!</h2><p class="one">${esc(t('Bütün adımları tamamladınız. Sonuç beklediğiniz gibi değilse Content’e sorun; birlikte bakalım.'))}</p></div>`;
   else { const a = A[OD.i];
     ic = `<div class="okart${OD.yon < 0 ? ' geri' : ''}"><div class="ono">${esc(t(`${OD.i + 1} / ${n} adım`))}</div><h2>${esc(a.baslik || '')}</h2>${a.nerede ? yolHtml(a.nerede) : ''}<p class="one">${esc(a.ne_yapilir || '')}</p>
-      ${a.ipucu ? `<p class="ip">💡 ${esc(a.ipucu)}</p>` : ''}${a.emin === false ? `<p class="emin">${esc(t('Bu düğmenin adı ekranınızda biraz farklı olabilir; benzerini arayın.'))}</p>` : ''}</div>`; }
+      ${a.ipucu ? `<p class="ip"><b>${esc(t('İpucu'))}:</b> ${esc(a.ipucu)}</p>` : ''}${a.emin === false ? `<p class="emin">${esc(t('Bu düğmenin adı ekranınızda biraz farklı olabilir; benzerini arayın.'))}</p>` : ''}</div>`; }
   el.innerHTML = `<div class="ou"><div class="seg">${seg}</div><button type="button" data-o="kapat" aria-label="Kapat">✕</button></div><div class="oic">${ic}</div>
     <div class="oalt">${OD.i >= n ? `<button class="btn" data-o="sor">${IK_SOHBET}${esc(t('Content’e sorun'))}</button><button class="btn ana" data-o="kapat">${esc(t('Rehbere dön'))}</button>`
       : `<button class="btn" data-o="geri"${OD.i === 0 ? ' disabled' : ''} aria-label="Önceki adım">‹</button><button class="btn" data-o="sor">${IK_SOHBET}${esc(t('Takıldım'))}</button><button class="btn ana" data-o="ileri">${esc(t(OD.i === n - 1 ? 'Yaptım, bitir' : 'Yaptım, sıradaki'))}</button>`}</div>
@@ -1326,5 +1327,6 @@ addEventListener('hashchange', yonlendir);
 document.addEventListener('visibilitychange', () => { if (!document.hidden){ if (D && location.hash.startsWith('#c=')) isYukle(D.id); else if (!location.hash) gecmisCiz(); } });
 yonlendir();
 </script>
+<script src="/static/zil.js?v=2"></script>
 </body>
 </html>
