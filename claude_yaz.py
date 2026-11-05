@@ -127,7 +127,13 @@ def durum(zorla=False):
             r = subprocess.run([p, "auth", "status"], capture_output=True, text=True, timeout=30, env=_ortam(), cwd=tempfile.gettempdir())
             d["giris"] = bool(json.loads(r.stdout or "{}").get("loggedIn"))
         except Exception:  # noqa: BLE001
-            d["giris"] = False
+            # 2026-11-05: yük altında denetim zaman aşımına uğrayınca "giriş yok" önbelleğe yazılıyor, yazı işleri sessizce yerel modele düşüyordu.
+            # Denetim yapılamadıysa son bilinen sonuç geçerli; önbellek yenilenmez, sonraki çağrı yeniden dener.
+            try:
+                eski = json.loads(DURUM.read_text(encoding="utf-8"))
+                return {**eski, "kullanim": bool(acik and eski.get("giris"))}
+            except Exception:  # noqa: BLE001
+                d["giris"] = False
     try:
         DURUM.parent.mkdir(parents=True, exist_ok=True)
         DURUM.write_text(json.dumps(d), encoding="utf-8")

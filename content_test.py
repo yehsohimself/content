@@ -65,6 +65,12 @@ def puanla(d, beklenen):
     if beklenen.get("ozet"):
         metin = _sade((y.get("baslik") or "") + " " + (y.get("ozet") or "") + " " + json.dumps([a.get("ad") for a in y.get("araclar") or []], ensure_ascii=False))
         sonuc["ozet"] = all(_var(k, metin) for k in beklenen["ozet"])
+    if beklenen.get("akim"):            # akım imzası ya da web taraması bu kalıbı adlandırdı mı
+        metin = _sade(json.dumps([d.get("akim_imza") or {}, d.get("web_trend") or {}], ensure_ascii=False))
+        sonuc["akim"] = all(_var(k, metin) for k in beklenen["akim"])
+    if beklenen.get("kalip"):           # {"goruntu": "sabit", "konusma": "degisen"}: akımın kuralı doğru okundu mu
+        k = (d.get("akim_kalip") or {}).get("kanallar") or {}
+        sonuc["kalip"] = all(k.get(a) == b for a, b in beklenen["kalip"].items())
     if beklenen.get("arac"):
         metin = _sade(json.dumps([[a.get("ad"), a.get("ornek")] for a in y.get("araclar") or []], ensure_ascii=False) + json.dumps(y.get("sablon") or {}, ensure_ascii=False))
         sonuc["arac"] = all(_var(k, metin) for k in beklenen["arac"])

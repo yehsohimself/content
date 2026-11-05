@@ -199,7 +199,7 @@ def kaydet(app):
     @app.get("/api/content/ayar")
     def content_ayar_oku():
         import importlib.util
-        return jsonify({**content.ayar(), "shazam_kurulu": importlib.util.find_spec("shazamio") is not None})
+        return jsonify({**content.ayar(), "shazam_kurulu": importlib.util.find_spec("shazamio") is not None, "olcum_kurulu": (content.Path(__file__).resolve().parent / ".venv-rea" / "bin" / "python").exists()})
 
     @app.post("/api/content/ayar")
     def content_ayar_yaz():
@@ -292,6 +292,6 @@ def kaydet(app):
             kok = content.yol(cid)
         except ValueError:
             abort(404)
-        if ".." in yol or not re.fullmatch(r"kaynak\.mp4|kapak\.jpg|kareler/k_\d+\.jpg", yol) or not (kok / yol).exists():
+        if ".." in yol or not re.fullmatch(r"kaynak\.mp4|kapak\.jpg|kareler/k_\d+\.jpg|is_ara/rea/shots/shot_\d+\.jpg|is_ara/rea/stems/(vocals|music)\.m4a", yol) or not (kok / yol).exists():
             abort(404)
         return send_from_directory(str(kok), yol, max_age=3600)

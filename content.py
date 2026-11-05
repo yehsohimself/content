@@ -30,7 +30,7 @@ YTDLP = str(KLASOR / ".venv" / "bin" / "yt-dlp") if (KLASOR / ".venv" / "bin" / 
 FFMPEG = shutil.which("ffmpeg") or "/opt/homebrew/bin/ffmpeg"
 FFPROBE = shutil.which("ffprobe") or "/opt/homebrew/bin/ffprobe"
 
-AYAR_VARSAYILAN = {"yorumlar": False, "shazam": False, "tarayici": "", "sunra": True, "dil": ""}
+AYAR_VARSAYILAN = {"yorumlar": False, "shazam": False, "tarayici": "", "sunra": True, "dil": "", "olcum": True}
 TARAYICILAR = ("chrome", "safari", "firefox", "brave", "edge", "arc")
 
 _kilit = threading.RLock()      # oku+değiştir+yaz bir bütün
@@ -43,10 +43,23 @@ def ayar():
         return dict(AYAR_VARSAYILAN)
 
 
+_KENDI_ETIKET = re.compile(r"^\s*(S|Sahne)\s*\d+\s*[•·.,:-]?\s*[\d.,]*\s*(sn|s)?\s*$", re.I)
+
+
+def gercek_yazilar(tarif):
+    """Videonun kendi yazıları: inceleme karelerine bizim bastığımız "Sahne 1 · 0.2 sn" etiketi yazı tanımaya takılıyordu."""
+    out = []
+    for y in (tarif or {}).get("yazilar") or []:
+        m = " / ".join(x for x in re.split(r"\s*/\s*", y.get("metin") or "") if x.strip() and not _KENDI_ETIKET.match(x))
+        if m:
+            out.append({"sn": y.get("sn") or 0, "metin": m})
+    return out
+
+
 def ayar_yaz(yeni):
     a = ayar()
     for k, v in (yeni or {}).items():
-        if k in ("yorumlar", "shazam", "sunra"):
+        if k in ("yorumlar", "shazam", "sunra", "olcum"):
             a[k] = bool(v)
         elif k == "tarayici":
             a[k] = v if v in TARAYICILAR else ""
@@ -470,7 +483,7 @@ def cozumle(cid, planla_da=True):
         ocr = []
         for t, _, kyol in kareler:
             try:
-                y = [s for s in goruntu.yazi_oku(kyol) if len(s.strip()) > 1]
+                y = [s for s in goruntu.yazi_oku(kyol) if len(s.strip()) > 1 and not _KENDI_ETIKET.match(s)]
             except Exception:  # noqa: BLE001
                 y = []
             if y and (not ocr or ocr[-1][1] != y):

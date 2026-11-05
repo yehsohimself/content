@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 goruntu.py - Videodan sahne kareleri çıkarır, ekrandaki yazıları okur (macOS yazı tanıma),
-seçili kareleri bilgisayardaki görüntü modeliyle betimler. Dışarı veri gitmez.
+kareleri betimler: Claude açıksa kareler (görsel) Anthropic'e gider (_claude_betimle), kapalıysa bilgisayardaki görüntü modeli çalışır; ses ve video gitmez.
 
 Kullanım (tek başına): python goruntu.py video.mp4 cikti_klasoru
 """

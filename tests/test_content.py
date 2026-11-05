@@ -94,7 +94,7 @@ def test_arac_izleri():
     m = "\n".join(A.olc(d))
     assert "Sora 2" in m and "8 sn" in m
     assert "Veo" in A.defter_metni()
-    uzun = A.olc({"kaynak": {"w": 1080, "h": 1920, "fps": 30, "sure": 31}, "tarif": {"sahneler": [{"bas": 0, "bit": 27}, {"bas": 27, "bit": 31}]}})
+    uzun = A.olc({"kaynak": {"w": 1080, "h": 1920, "fps": 30, "sure": 38}, "tarif": {"sahneler": [{"bas": 0, "bit": 34}, {"bas": 34, "bit": 38}]}})
     assert any("kesmesiz" in x for x in uzun)
 
 
@@ -180,3 +180,96 @@ def test_sohbet_yaniti_ayrilir_ve_bos_mesaj_reddedilir(istemci, kok):
     assert istemci.post(f"/api/content/{cid}/sohbet", json={"mesaj": " "}).status_code == 400
     assert istemci.post("/api/content/sohbet", json={}).status_code == 400
     assert istemci.delete(f"/api/content/{cid}/sohbet").status_code == 200
+
+
+def _sahte_olcum():
+    return {"source": {"duration": 20.0},
+            "shots": [{"id": "shot_001", "index": 1, "start": 0.0, "end": 8.0, "duration": 8.0, "base": {"label": "ai_video", "confidence": .7}, "deterministic": {"probs": {"ai_video": .7, "live_action": .3}}, "review": {"raw_probs": {"live_action": .9, "ai_video": .1}, "replication": {"video_prompt_en": "gereksiz"}}, "assets": {"sheet": "shots/shot_001.jpg"}},
+                      {"id": "shot_002", "index": 2, "start": 8.0, "end": 20.0, "duration": 12.0, "base": {"label": "live_action", "confidence": .55}, "deterministic": {"probs": {"live_action": .6, "ai_video": .4}}, "assets": {"sheet": "shots/shot_002.jpg"},
+                       "review": {"raw_probs": {"ai_video": .55, "live_action": .45}, "ai_edits": [{"kind": "lip_sync", "evidence": "ağız"}], "replication": {"video_prompt_en": "a dog runs"}}}],
+            "audio": {"has_audio": True, "voice": {"present": True}, "music": {"present": True, "tempo_bpm": 120.0, "beat_strength": .2, "key": {"tonic": "C", "mode": "minor", "confidence": .3}}, "sfx": {}},
+            "sound_sources": {"music": {"probs": {"popular_song": .7, "ai_generated": .3}}},
+            "packaging": {"text_cues": [{"t0": 1, "text": "三", "kind": "label"}, {"t0": 2, "text": "中文字幕", "kind": "subtitle"}, {"t0": 3, "text": "Hello world", "kind": "subtitle"}], "stickers": []},
+            "provenance": {"aigc": {"label": ""}, "hints": {"generator": ["Google Veo?"], "editor": ["CapCut/剪映"]}, "evidence": []},
+            "video_context": {"transcoded": True}, "production_plan": {"units": [], "calls": 0}, "summary": {"avg_shot_s": 10}}
+
+
+def test_olcum_cop_ve_zayif_izi_almaz(istemci):
+    """Çince tanıma çöpü, tek harf ve dosyada rastgele geçen 'veo' kanıt olmaz; güveni düşük anahtar yazılmaz."""
+    import content_olcum as O
+    cid = _sahte_is(None)
+    o = O.ozet(cid, _sahte_olcum())
+    assert o["yazi"]["altyazi"] == 1 and o["yazi"]["etiket"] == 0
+    assert o["izler"]["uretici"] == [] and o["izler"]["duzenleyici"] == ["CapCut/剪映"] and o["izler"]["yapay_zeka_etiketi"] is False
+    assert o["ses"]["muzik"]["bpm"] == 120.0 and o["ses"]["muzik"]["anahtar"] is None
+    assert [round(x["oran"], 1) for x in o["karisim"]] == [.6, .4] and o["karisim"][0]["tur"] == "ai_video"
+    s = o["sahneler"][1]
+    assert o["sahneler"][0]["tur"] == "live_action" and o["sahneler"][0]["istem_en"] == ""     # gerçek çekimde göz ölçümü geçer, istem yazılmaz
+    assert s["supheli"] and s["istem_en"] == "a dog runs" and s["ikinci"] == "Gerçek çekim" and s["islem"][0]["ad"] == "dudak uyumu yapılmış"
+    m = O.istem_metni(o)
+    assert "no 2, 8.0-20.0 sn: Yapay zekâ videosu" in m and "emin değil" in m and "Veo" not in m
+
+
+def test_ana_inceleme_cekimi_duzeltir(istemci):
+    import content
+    import content_olcum as O
+    cid = _sahte_is(None)
+    content.guncelle(cid, olcum=O.ozet(cid, _sahte_olcum()))
+    O.karar_uygula(cid, {"cekim_karari": [{"no": 2, "tur": "live_action", "neden": "yayıncı kamera arkasını paylaşmış", "guven": "yuksek"}, {"no": 9, "tur": "ai_video"}, {"no": 1, "tur": "uydurma"}]})
+    o = content.oku(cid)["olcum"]
+    s = o["sahneler"][1]
+    assert s["tur"] == "live_action" and s["ad"] == "Gerçek çekim" and not s["supheli"] and s["istem_en"] == "" and s["kanit"][0].startswith("yayıncı")
+    assert o["karisim"] == [{"tur": "live_action", "ad": "Gerçek çekim", "oran": 1.0}]
+
+
+def test_olcum_arac_yoksa_sessizce_gecer(istemci, monkeypatch):
+    import content_olcum as O
+    monkeypatch.setattr(O, "REA_PY", O.KLASOR / "yok" / "python")
+    assert O.hazir() is False and O.calistir(_sahte_is(None), log=lambda m: None) is None
+    assert O.istem_metni(None).startswith("(sahne")
+
+
+def test_ayrilmis_ses_yolu_yalniz_izinli_dosyalar(istemci):
+    import content
+    cid = _sahte_is(None)
+    k = content.yol(cid) / "is_ara" / "rea"
+    (k / "stems").mkdir(parents=True)
+    (k / "stems" / "music.m4a").write_bytes(b"x")
+    (k / "breakdown.json").write_text("{}")
+    assert istemci.get(f"/content-dosya/{cid}/is_ara/rea/stems/music.m4a").status_code == 200
+    assert istemci.get(f"/content-dosya/{cid}/is_ara/rea/breakdown.json").status_code == 404
+
+
+def test_olculen_tur_goze_ezilmez():
+    import content_olcum as O
+    s = {"deterministic": {"probs": {"static_hold": .9, "ai_video": .1}}, "review": {"raw_probs": {"ai_video": 1}}}
+    assert O._karar(s)[0] == "static_hold"
+    s = {"deterministic": {"probs": {"ai_video": .8}}, "base": {"label": "ai_video", "confidence": .8}}      # bakılmamış: güven düşük, emin değil
+    k = O._karar(s)
+    assert k[0] == "ai_video" and k[1] <= .55 and k[3] is True
+
+
+def test_kendi_kare_etiketimiz_yazi_sayilmaz():
+    import content
+    t = {"yazilar": [{"sn": 0.2, "metin": "Sahne 1 • 0.2 sn"}, {"sn": 1, "metin": "POV: / Sahne 2 · 1.6 sn"}, {"sn": 2, "metin": "S3 · 2.4s"}]}
+    assert content.gercek_yazilar(t) == [{"sn": 1, "metin": "POV:"}]
+
+
+def test_akim_kanallari_ve_kalip():
+    import content_akim as A
+    i = A._temiz({"goruntu": {"ne": "konuşan böcek", "aramalar": ["talking cockroach AI video", "hamam"]}, "konusma": {"ne": "", "aramalar": []}, "en_guclu": "hareket"})
+    assert list(i) == ["goruntu", "en_guclu"] and i["en_guclu"] == "goruntu" and i["goruntu"]["aramalar"] == ["talking cockroach AI video"]   # kısa tek sözcük arama olamaz
+    assert A.aramalar(i) == ["talking cockroach AI video"]
+    assert A._numarasiz("Konuşan böcek (bu videoyla birlikte 1, 2 ve 3'te görüldü).") == "Konuşan böcek."
+    assert A._numarasiz("milli takım forması (1), beyaz tişört (2 ve 3).") == "milli takım forması, beyaz tişört."
+    assert A._numarasiz("3 kişi (iki kadın) var") == "3 kişi (iki kadın) var"
+    assert "bilinmiyor" in A.kalip_metni({}) and "SABİT: x" in A.kalip_metni({"ornekler": [{}], "sabit": ["x"], "bazen": [], "degisen": [], "kollar": [], "emin": "orta"})
+    assert A.kanal_temizle({"kanallar": [{"kanal": "uydurma", "bulgu": "a"}, {"kanal": "ses", "bulgu": "b", "link": "javascript:x"}]}) == [{"kanal": "ses", "ad": "Ses", "bulgu": "b", "link": ""}]
+
+
+def test_tek_sozcuk_oneri_aramaya_girmez(monkeypatch):
+    import content_benzer as B
+    goren = []
+    monkeypatch.setattr(B, "_ara", lambda q, g: goren.append(q) or [])
+    B.adaylar({"akim_imza": {"goruntu": {"ne": "x", "aramalar": ["talking cockroach AI video"]}, "en_guclu": "goruntu"}}, sayfa={"tiktok_onerilen_aramalar": ["hamam", "hamam böceği"]})
+    assert "hamam #shorts" not in goren and "hamam böceği #shorts" in goren and goren[0].startswith("talking cockroach")

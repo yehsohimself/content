@@ -17,6 +17,8 @@ from pathlib import Path
 
 import content as C
 
+import content_akim as AK
+
 UA = {"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0 Safari/537.36",
       "Accept-Language": "en-US,en;q=0.9"}
 
@@ -77,16 +79,18 @@ Known about the video: {bilinen}
 Its sound: {ses}. The video itself may be a one-off VARIATION (other characters, other setting) of a trend that uses this sound; identify the trend
 built on this sound (or on the search ideas), even if no page mentions this exact video.
 Search ideas: {sorgular}
+{kanallar}
 Look for: trend explainer pages, news articles, Know Your Meme, AI-video sites' trend/template pages ("<song> AI trend", "<trend> vs original").
 Report ONLY what pages explicitly say; never guess. Vendor pages may exaggerate tools but their facts (which match/film/date/song) are usually right.
 If no page clearly describes a trend that uses this sound/search idea, return "bulundu": false.
 Reply with JSON only, values in {dil_ad}:
 {{"bulundu": true, "akim": "trend name", "orijinal_an": "the real moment it recreates (who, what, which match/film, date) or empty",
 "araclar": ["tools/models the pages name"], "nasil": "how it is made according to the pages, 1-3 sentences",
-"arama": "one YouTube query to find the original moment, or empty", "kaynaklar": [{{"link": "page URL", "ne": "what this page says, short"}}]}}"""
+"arama": "one YouTube query to find the original moment, or empty", "kaynaklar": [{{"link": "page URL", "ne": "what this page says, short"}}],
+"kanallar": [{{"kanal": "goruntu|ses|konusma|hareket|super", "bulgu": "what you found through this channel, short", "link": "page URL or empty"}}]}}"""
 
 
-def web_trend(sarki, oneriler=(), eylem="", bilinen="", dil="tr"):
+def web_trend(sarki, oneriler=(), eylem="", bilinen="", dil="tr", imza=None):
     """Akımı web'de arar: Claude'un kendi web araması (WebSearch/WebFetch; abonelikten, ek ücret yok). Anahtarsız arama motorları
     (DuckDuckGo, Bing) otomatik sorguyu birkaç istekte engelliyor, bu yüzden onlar yalnız yedek. Bulamazsa {}."""
     import claude_yaz
@@ -99,17 +103,20 @@ def web_trend(sarki, oneriler=(), eylem="", bilinen="", dil="tr"):
         sorgular += [f'"{sarki}" AI trend', f"{sarki} tiktok trend"]
         if eylem:
             sorgular.append(f"{sarki} {eylem}")
-    sorgular += [f"{w} trend" for w in list(oneriler)[:2] if w]
+    sorgular = AK.aramalar(imza) + sorgular + [f"{w} trend" for w in list(oneriler)[:2] if w and (len(w.split()) >= 2 or not imza)]
     if not sorgular:
         return {}
     try:
         j = claude_yaz.json_coz(claude_yaz.sor(WEB_TREND.format(dil_ad="English" if dil == "en" else "Turkish", bilinen=bilinen[:900] or "-", sorgular="; ".join(dict.fromkeys(sorgular)),
+                                                                   kanallar=("A trend can be recognised through different channels, not only the sound. Try EACH channel below separately, since no page may mention the song. "
+                                                                             "A channel that finds nothing is left out of 'kanallar'. Accept a page only if it describes this same pattern, not merely shared words:\n" + AK.metin(imza)) if imza else "",
                                                                    ses=f"{sarki} – {sanatci}".strip(" –") or "unknown"),
                                                model_adi="sonnet", araclar="WebSearch,WebFetch", zaman_asimi=300)) or {}
     except Exception:  # noqa: BLE001
         j = {}
     if not j.get("bulundu"):
         return {}
+    j["kanallar"] = AK.kanal_temizle(j)
     j["kaynaklar"] = [k for k in j.get("kaynaklar") or [] if isinstance(k, dict) and re.match(r"https?://", k.get("link") or "")
                       and not ATLA.search(k.get("link") or "")][:5]
     return j

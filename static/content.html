@@ -332,6 +332,41 @@ details.ayrinti li{margin:4px 0}
 .sacik{display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:baseline;margin-top:10px;min-height:44px}
 .sacik b{font-size:13px;color:var(--vurgu);font-variant-numeric:tabular-nums;white-space:nowrap}
 .sacik p{margin:0;font-size:15px;color:var(--ink);transition:opacity .25s}
+/* sahne ölçümü: çekim türü renkleri düz, süs yok */
+.t-live_action{--t:#34c77b}.t-ai_video{--t:#f2c230}.t-avatar{--t:#ff9f43}.t-cg_3d{--t:#5aa9ff}.t-anim_2d{--t:#c58bff}.t-stop_motion{--t:#e08a6d}.t-code_render{--t:#4fd1c5}.t-screen_capture{--t:#9aa5b1}.t-still_motion{--t:#e879a6}.t-static_hold{--t:#7c8592}
+:root[data-theme="light"] .t-ai_video{--t:#c79a00}
+.sk[class*=" t-"]::after,.sk[class^="t-"]::after{background:var(--t);opacity:1;height:4px}
+.skk{position:absolute;inset:0;display:flex;gap:1px;border-radius:8px;overflow:hidden}.skk i{flex:1;background:var(--yuzey2) center/cover}
+.akk{display:flex;gap:8px;overflow-x:auto;padding-bottom:8px;margin-bottom:6px}.akk a{flex:0 0 118px;aspect-ratio:16/9;border-radius:9px;overflow:hidden;border:1px solid var(--cizgi)}.akk img{width:100%;height:100%;object-fit:cover;display:block}
+.aks{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px}.aks>div{border:1px solid var(--cizgi);border-radius:12px;padding:11px 13px;background:var(--yuzey)}.aks b{font-size:13px;font-weight:700}.aks .sabit b{color:var(--vurgu)}.aks ul{margin:6px 0 0;padding-left:17px;font-size:14px;color:var(--ink)}.aks li+li{margin-top:4px}
+.akkol{margin-top:12px}.akkol h4{margin:0 0 6px;font-size:14px}.akkol p{margin:0 0 5px;font-size:14px;color:var(--ink2)}.akkol b{color:var(--ink)}
+.kkanal{margin-top:14px}.kkanal h4{font-size:14px;margin:0 0 8px;font-weight:700}
+.kkz{border-top:1px solid var(--cizgi);padding:9px 0}.kkz b{display:flex;align-items:center;gap:7px;font-size:13px;color:var(--ink3);font-weight:600}.kkz b svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.8}
+.kkz b span{color:var(--vurgu);font-weight:600;font-size:12px}.kkz p{margin:3px 0 0;font-size:14.5px;color:var(--ink)}.kkz .bul{font-size:13.5px;color:var(--ink2)}.kkz.var b{color:var(--ink)}
+.karisim{display:flex;height:10px;border-radius:99px;overflow:hidden;gap:2px;margin:2px 0 10px;background:var(--yuzey2)}
+.karisim i{background:var(--t);display:block;min-width:3px;transition:flex-grow .6s}
+.lejant span.t{display:inline-flex;align-items:center}.lejant span.t::before{background:var(--t);height:8px;width:8px;border-radius:50%}
+.sacik.genis{display:block;min-height:0;border:1px solid var(--cizgi);border-radius:12px;background:var(--yuzey);padding:12px 14px;margin-top:14px}
+.sacik.genis .bas{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-bottom:6px}
+.sacik.genis .tad{font-size:13px;font-weight:700;color:var(--ink);display:inline-flex;align-items:center;gap:6px}.sacik.genis .tad::before{content:'';width:8px;height:8px;border-radius:50%;background:var(--t)}
+.sacik.genis .pay{font-size:12.5px;color:var(--ink3)}
+.sacik.genis p.ne{margin:0 0 6px;font-size:15px}
+.sacik.genis ul{margin:4px 0 0;padding-left:18px;font-size:13.5px;color:var(--ink2)}
+.sacik.genis .islem{font-size:13.5px;color:var(--turuncu);margin:4px 0 0}
+.sacik.genis .cekim{font-size:13.5px;color:var(--ink2);margin:6px 0 0}
+.istem{margin-top:10px;border-top:1px solid var(--cizgi);padding-top:10px}
+.istem small{display:block;font-size:12.5px;color:var(--ink3);margin-bottom:6px}
+.istem pre{margin:0 0 8px;white-space:pre-wrap;font:13px/1.5 ui-monospace,Menlo,monospace;color:var(--ink);background:var(--yuzey2);border-radius:9px;padding:9px 11px;max-height:190px;overflow:auto}
+.sesg{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px}
+.sesg>div{border:1px solid var(--cizgi);border-radius:12px;padding:10px 12px;background:var(--yuzey)}
+.sesg b{display:block;font-size:12.5px;font-weight:600;color:var(--ink3);margin-bottom:3px}
+.sesg span{font-size:15px;font-weight:600;color:var(--ink);font-variant-numeric:tabular-nums}
+.sesg small{display:block;font-size:12.5px;color:var(--ink3);margin-top:3px}
+.sesayir{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.sesayir label{font-size:13px;color:var(--ink2);display:flex;align-items:center;gap:8px;flex:1 1 240px}
+.sesayir audio{height:32px;flex:1;min-width:0;color-scheme:dark}
+:root[data-theme="light"] .sesayir audio{color-scheme:light}
+.izler{font-size:13px;color:var(--ink3);margin:10px 0 0}
 .lejant{display:flex;flex-wrap:wrap;gap:14px;margin-top:8px;font-size:12.5px;color:var(--ink3)}
 .lejant span::before{content:'';display:inline-block;width:14px;height:3px;border-radius:99px;background:var(--ink3);margin-right:6px;vertical-align:3px}
 .lejant .ara::before{background:var(--vurgu)}.lejant .dis::before{background:var(--turuncu)}
@@ -642,11 +677,21 @@ const EN = {
   'Şu ana kadar ne buldun?': 'What have you found so far?', 'Ne kadar sürer?': 'How long will it take?', 'Neden çözülemedi?': 'Why could it not be solved?', 'Başka nasıl deneyebilirim?': 'How else can I try?',
   'Neden emin değilsin?': 'Why are you not sure?', 'Ücretsiz yapabilir miyim?': 'Can I do it for free?', 'Bilgisayarda yapabilir miyim?': 'Can I do it on a computer?', 'Telefonda yapabilir miyim?': 'Can I do it on my phone?',
   'Orijinal görüntüyü nasıl bulurum?': 'How do I find the original footage?', 'Kendi fotoğrafımla olur mu?': 'Will it work with my own photo?', 'Bu kaç dakikamı alır?': 'How many minutes will this take me?',
-  'Size gerekenler: ': 'What you need: ', 'Ücretsiz': 'Free', 'Ücretli': 'Paid', 'Bir kısmı ücretli': 'Partly paid'
+  'Size gerekenler: ': 'What you need: ', 'Gerçek çekim': 'Real footage', 'Yapay zekâ videosu': 'AI video', 'Konuşan avatar': 'Talking avatar', '3D animasyon': '3D animation', '2D animasyon': '2D animation', 'Hareketli grafik': 'Motion graphics', 'Ekran kaydı': 'Screen recording', 'Kayan fotoğraf': 'Panning photo', 'Durağan görsel': 'Still image',
+  'ya da': 'or', 'Nasıl çekilmiş': 'How it was shot', 'Aynısını üretecek bir istem. Videonun gerçek istemi değil, görüntüden yeniden yazıldı.': 'A prompt that would produce the same shot. This is not the original prompt; it was rewritten from the picture.', 'İstemi kopyala': 'Copy prompt',
+  'Büyük olasılıkla': 'Very likely', 'Olası': 'Possible', 'Tahmin': 'A guess', 'Ölçüm ile görüntü farklı şey söylüyor; emin değilim': 'The measurements and the picture disagree; I am not sure',
+  'Ses ve yazı': 'Sound and text', 'Dosyadan ölçüldü. Kaynak tahminleri yalnız tahmindir.': 'Measured from the file. Source estimates are only estimates.', 'Müzik': 'Music', 'Şarkı söyleniyor': 'Singing', 'Konuşma': 'Speech', 'Var': 'Yes', 'Ses': 'Sound', 'Belirgin ses yok': 'No clear sound', 'Sessiz': 'Silent', 'Efekt sesi': 'Sound effects', 'Üstteki yazılar': 'On-screen text', 'Kurgu': 'Editing',
+  'Yalnız konuşma': 'Voice only', 'Yalnız müzik': 'Music only', 'Dosya izleri': 'File traces', 'Piksel ölçümü': 'Pixel measurement',
+  'Video sahne sahne ölçülüyor: kare izleri, gürültü, ses ayrımı': 'Measuring the video shot by shot: frame traces, noise, sound separation', 'Sahne ölçümü yapılamadı; incelemeye devam ediliyor': 'Could not measure the shots; continuing the review',
+  'yapay ses olabilir': 'may be a synthetic voice', 'videoyla birlikte üretilmiş olabilir': 'may have been generated with the video', 'gerçek insan sesi olabilir': 'may be a real human voice', 'yapay zekâyla üretilmiş olabilir': 'may be AI-generated', 'hazır müzik kütüphanesinden olabilir': 'may be from a stock music library', 'bilinen bir şarkı olabilir': 'may be a known song', 'kurguda eklenmiş olabilir': 'may have been added in the edit', 'çekim anının sesi olabilir': 'may be sound from the shoot',
+  'Akımı ele veren izler': 'What gives the trend away', 'Görüntü': 'Picture', 'Hareket ve geçiş': 'Motion and transitions', 'Üstteki yazı': 'On-screen text', 'En ayırt edici': 'Most distinctive', 'Akımı ele verebilecek izlere bakılıyor: görüntü, ses, konuşma, hareket, üstteki yazı': 'Looking for what gives the trend away: picture, sound, speech, motion, on-screen text',
+  'Akım': 'Trend', 'videoyla karşılaştırdım. Bir akım her videoda aynı görünmez.': 'videos compared. A trend does not look the same in every video.', 'Herkes aynen yapıyor': 'Everyone does this', 'Bazılarında var': 'Only some do', 'Her videoda farklı': 'Different in every video', 'Akımın kolları': 'Branches of the trend', 'Bu video': 'This video', 'akımın kendisi': 'the trend itself', 'bazılarında': 'in some', 'bu videoya özgü': 'specific to this video', 'Aynı akımın örnekleri yan yana konuyor: ne sabit, ne değişiyor': 'Comparing examples of the trend: what stays the same, what changes',
+  'Sahne sahne ölç': 'Measure shot by shot', 'Her çekimin gerçek mi yapay zekâ mı olduğunu bu bilgisayarda ölçer; çekimlere bakarken Claude kullanılır.': 'Measures on this computer whether each shot is real or AI; Claude looks at the shots.', 'Ücretsiz': 'Free', 'Ücretli': 'Paid', 'Bir kısmı ücretli': 'Partly paid'
 };
 const EN_KALIP = [[/^(\d+) sahne · ([\d.]+) sn\. Bir sahneye dokunun ya da videoyu oynatın\.$/, '$1 scenes · $2 s. Tap a scene or play the video.'], [/^(\d+) sahne · ([\d.]+) sn$/, '$1 scenes · $2 s'],
   [/^(\d+) sahne, ([\d.]+) sn izledim$/, 'Watched $1 scenes, $2 s'], [/^(\d+) öğretici video izledim$/, 'Watched $1 tutorials'], [/^(\d+) video karşılaştırdım; biri aynı sesi taşıyor$/, 'Compared $1 videos; one has the same sound'],
   [/^(\d+) video karşılaştırdım$/, 'Compared $1 videos'], [/^(\d+) yorum okudum$/, 'Read $1 comments'], [/^Şablon bağlantısı var: (.*)$/, 'Template link: $1'], [/^(\d+)\. adım: ([\s\S]*)$/, 'Step $1: $2'],
+  [/^Akımda sabit olan: (.*)$/, 'Stays the same in this trend: $1'], [/^En ayırt edici iz: (.*)$/, 'Most distinctive trace: $1'], [/^(\d+) çekim ölçtüm$/, 'Measured $1 shots'], [/^(\d+) çekim ölçüldü; çekimlere tek tek bakılıyor$/, 'Measured $1 shots; looking at each one'], [/^Sahne haritası çıkarıldı: (.*)$/, 'Shot map ready: $1'], [/^(\d+) kesme$/, '$1 cuts'], [/^dakikada ([\d.]+)$/, '$1 per minute'],
   [/^([\d.]+)–([\d.]+) sn$/, '$1–$2 s'], [/^([\d.]+) sn$/, '$1 s'],
   [/^✓ (.+) videosu$/, '✓ $1 video'], [/^(\d+) \/ (\d+) adım$/, '$1 / $2 steps'], [/^İsteğiniz: ([\s\S]*)$/, 'You asked: $1'],
   [/^Düzeltmeniz: ([\s\S]*)$/, 'Your correction: $1'], [/^Örneğin ([\s\S]*)$/, 'For example $1'], [/^“(.*)” aramasını kopyala$/, 'Copy the search “$1”'],
@@ -709,6 +754,7 @@ $('#ayarBtn').onclick = async () => {
     ${satir('shazam', 'Şarkıyı sesten tanı (Shazam)', 'Videonun ses parmak izi Shazam\'a gönderilir. Akımı şarkısından bulmaya yardım eder.', a.shazam_kurulu ? '' : '<small style="color:var(--turuncu)">Kurulu değil: ./kurulum.sh --shazam</small>')}
     <label class="ayarsatir"><div><b>Tarayıcı oturumu</b><small>Giriş isteyen videolar için tarayıcınızdaki oturum kullanılır. Kapalıyken yalnız herkese açık videolar iner.</small></div>
       <select data-k="tarayici">${[['', 'Kapalı'], ['chrome', 'Chrome'], ['safari', 'Safari'], ['firefox', 'Firefox'], ['brave', 'Brave'], ['edge', 'Edge'], ['arc', 'Arc']].map(([v, ad]) => `<option value="${v}" ${a.tarayici === v ? 'selected' : ''}>${ad}</option>`).join('')}</select></label>
+    ${a.olcum_kurulu ? satir('olcum', 'Sahne sahne ölç', 'Her çekimin gerçek mi yapay zekâ mı olduğunu bu bilgisayarda ölçer; çekimlere bakarken Claude kullanılır.') : ''}
     ${satir('sunra', 'Güncel yapay zekâ araçları listesi', 'Rehberde araçların güncel adlarını yazmak için günde bir kez api.sunra.ai\'den herkese açık model listesi alınır.')}
     <div class="alt" style="margin-top:14px"><button class="btn ana kucuk" data-kapat>Kapat</button></div></div>`;
   document.body.appendChild(p);
@@ -865,6 +911,8 @@ function rehberHtml(d, y){
   h += semaHtml(d, y);
   h += seritHtml(d);
   h += katmanHtml(d, y);
+  h += akimHtml(d);
+  h += sesHtml(d);
   h += kanitHtml(d, y);
   h += dogruHtml(d);
   /* size gerekenler */
@@ -1065,14 +1113,29 @@ setInterval(() => $$('[data-gecen]').forEach(el => el.textContent = sureYaz(Date
 
 /* ---------- sahne şeridi: süreye göre karolar; video oynarken çizgi ilerler, dokununca o sahneye gider ---------- */
 const SAHNE_TUR = {kaynak: 'Ana görüntü', ara: 'Kendi görüntünüzü koyacağınız sahne', dis: 'Ek: anlatım, tanıtım ya da kapanış'};
+const ozelSahne = d => (((d.olcum || {}).sahneler) || []).filter(s => s.bit > s.bas);
+const seritSahneleri = d => { const O = ozelSahne(d); return O.length ? O : ((d.tarif || {}).sahneler || []).filter(s => s.bit > s.bas); };
+function sacikHtml(d, s){
+  if (!s.ad) return `<b>${sn1(s.bas)}–${sn1(s.bit)} sn</b><p>${esc(s.aciklama || '')}</p>`;
+  const pay = s.supheli ? 'Ölçüm ile görüntü farklı şey söylüyor; emin değilim' : s.guven >= .8 ? 'Büyük olasılıkla' : s.guven >= .6 ? 'Olası' : 'Tahmin';
+  return `<div class="bas"><b>${sn1(s.bas)}–${sn1(s.bit)} sn</b><span class="tad t-${esc(s.tur)}">${esc(s.ad)}</span><span class="pay">${esc(pay)}${s.ikinci ? ` · ${esc(t('ya da'))} ${esc(s.ikinci)}` : ''}</span></div>
+    ${s.ne ? `<p class="ne">${esc(s.ne)}</p>` : ''}${(s.islem || []).map(e => `<p class="islem">${esc(e.ad)}${e.kanit ? ': ' + esc(e.kanit) : ''}</p>`).join('')}
+    ${(s.kanit || []).length ? `<ul>${s.kanit.map(x => `<li>${esc(x)}</li>`).join('')}</ul>` : ''}${s.cekim ? `<p class="cekim"><b>${esc(t('Nasıl çekilmiş'))}:</b> ${esc(s.cekim)}</p>` : ''}
+    ${s.istem_en ? `<div class="istem"><small>${esc(t('Aynısını üretecek bir istem. Videonun gerçek istemi değil, görüntüden yeniden yazıldı.'))}</small><pre>${esc(s.istem_en)}</pre><button class="btn kucuk" data-g="istem" data-m="${esc(s.istem_en)}">${esc(t('İstemi kopyala'))}</button></div>` : ''}`;
+}
+/* tek ya da iki uzun çekim: aynı kareyi yaymak yerine zaman içinde birkaç kare */
+function seritKareleri(d, s){ const n = Math.min(6, Math.max(2, Math.round((s.bit - s.bas) / 2.5))); return `<span class="skk">${Array.from({length: n}, (_, i) => `<i style="background-image:url('/content-an/${d.id}/${sn1(s.bas + (s.bit - s.bas) * (i + .5) / n)}.jpg')"></i>`).join('')}</span>`; }
 function seritHtml(d){
-  const S = ((d.tarif || {}).sahneler || []).filter(s => s.bit > s.bas);
-  if (S.length < 2) return '';
+  const S = seritSahneleri(d), o = d.olcum || {}, K = ozelSahne(d).length ? (o.karisim || []) : [];
+  if (S.length < 2 && !K.length) return '';
   const turler = [...new Set(S.map(s => s.tur || 'kaynak'))];
-  return `<div class="bolum"><h2>Sahneler</h2><p class="alt">${S.length} sahne · ${sn1((d.kaynak || {}).sure)} sn. Bir sahneye dokunun ya da videoyu oynatın.</p><div class="gz serit">
-    <div class="seritIc">${S.map((s, i) => `<button type="button" class="sk ${esc(s.tur || 'kaynak')}" data-bas="${s.bas}" data-bit="${s.bit}" data-i="${i}" title="${esc(s.aciklama || '')}" style="flex-grow:${Math.max(.3, s.bit - s.bas).toFixed(2)};background-image:url('/content-an/${d.id}/${sn1((s.bas + s.bit) / 2)}.jpg')"><em>${sn1(s.bas)}</em></button>`).join('')}<div class="okbas"></div></div>
-    <div class="sacik"><b>${sn1(S[0].bas)}–${sn1(S[0].bit)} sn</b><p>${esc(S[0].aciklama || '')}</p></div>
-    ${turler.length > 1 ? `<div class="lejant">${turler.map(x => `<span class="${esc(x)}">${esc(SAHNE_TUR[x] || x)}</span>`).join('')}</div>` : ''}</div></div>`;
+  const sinif = s => s.ad ? `t-${esc(s.tur)}` : esc(s.tur || 'kaynak');
+  const alt = K.length ? (K.length === 1 ? `${K[0].ad}. ${S.length} çekim, ${sn1(o.sure)} sn.` : K.map(x => `${x.ad} %${Math.round(x.oran * 100)}`).join(' · ')) : `${S.length} sahne · ${sn1((d.kaynak || {}).sure)} sn. Bir sahneye dokunun ya da videoyu oynatın.`;
+  return `<div class="bolum"><h2>Sahneler</h2><p class="alt">${esc(alt)}</p><div class="gz serit">
+    ${K.length ? `<div class="karisim">${K.map(x => `<i class="t-${esc(x.tur)}" style="flex-grow:${x.oran}" title="${esc(x.ad)}"></i>`).join('')}</div>` : ''}
+    <div class="seritIc">${S.map((s, i) => `<button type="button" class="sk ${sinif(s)}" data-bas="${s.bas}" data-bit="${s.bit}" data-i="${i}" title="${esc(s.ad || s.aciklama || '')}" style="flex-grow:${Math.max(.3, s.bit - s.bas).toFixed(2)}${S.length < 3 ? '' : `;background-image:url('/content-an/${d.id}/${sn1((s.bas + s.bit) / 2)}.jpg')`}">${S.length < 3 ? seritKareleri(d, s) : ''}<em>${sn1(s.bas)}</em></button>`).join('')}<div class="okbas"></div></div>
+    <div class="sacik ${K.length ? 'genis' : ''}">${S[0] ? sacikHtml(d, S[0]) : ''}</div>
+    ${K.length > 1 ? `<div class="lejant">${K.map(x => `<span class="t t-${esc(x.tur)}">${esc(x.ad)}</span>`).join('')}</div>` : !K.length && turler.length > 1 ? `<div class="lejant">${turler.map(x => `<span class="${esc(x)}">${esc(SAHNE_TUR[x] || x)}</span>`).join('')}</div>` : ''}</div></div>`;
 }
 function seritGuncelle(tsn){
   const ic = $('.seritIc'); if (!ic) return;
@@ -1082,10 +1145,27 @@ function seritGuncelle(tsn){
   o.style.left = (el.offsetLeft + el.offsetWidth * oran) + 'px'; o.classList.add('on');
   if (!el.classList.contains('on')){
     K.forEach(x => x.classList.toggle('on', x === el));
-    const S = ((D.tarif || {}).sahneler || []).filter(s => s.bit > s.bas)[k] || {}, ac = $('.sacik');
-    if (ac){ ac.querySelector('b').textContent = `${sn1(S.bas)}–${sn1(S.bit)} sn`; ac.querySelector('p').textContent = S.aciklama || ''; }
+    const S = seritSahneleri(D)[k] || {}, ac = $('.sacik');
+    if (ac) ac.innerHTML = sacikHtml(D, S);
     if (el.offsetLeft < ic.scrollLeft || el.offsetLeft + el.offsetWidth > ic.scrollLeft + ic.clientWidth) ic.scrollTo({left: el.offsetLeft - 40, behavior: 'smooth'});
   }
+}
+/* ses ve yazı katmanı: yalnız ölçülen ya da bulunan şeyler; boş kutu yok */
+function sesHtml(d){
+  const o = d.olcum; if (!o || !o.ses) return '';
+  const s = o.ses, m = s.muzik || {}, k = s.konusma || {}, e = s.efekt || {}, y = o.yazi || {}, z = o.izler || {}, sr = d.sarki || {}, T = [];
+  if (m.var) T.push(['Müzik', sr.sarki ? sr.sarki + (sr.sanatci ? ' · ' + sr.sanatci : '') : [m.bpm ? `${Math.round(m.bpm)} BPM` : '', m.anahtar].filter(Boolean).join(' · ') || 'Var', [sr.sarki && m.bpm ? `${Math.round(m.bpm)} BPM` : '', sr.sarki ? m.anahtar : '', !sr.sarki ? m.kaynak : ''].filter(Boolean).join(' · ')]);
+  if (k.var) T.push([k.sarki ? 'Şarkı söyleniyor' : 'Konuşma', 'Var', sr.sarki ? '' : k.kaynak || '']);
+  if (!k.var && !m.var) T.push(['Ses', s.var ? 'Belirgin ses yok' : 'Sessiz', '']);
+  if (e.sayi) T.push(['Efekt sesi', String(e.sayi), [(e.liste || []).slice(0, 4).map(x => `${sn1(x.t)} sn`).join(', '), e.kaynak].filter(Boolean).join(' · ')]);
+  const yz = [[y.altyazi, 'altyazı'], [y.vurgulu, 'vurgulu yazı'], [y.baslik, 'başlık'], [y.etiket, 'etiket'], [y.cikartma, 'çıkartma']].filter(x => x[0]);
+  if (yz.length) T.push(['Üstteki yazılar', yz.map(x => `${x[0]} ${x[1]}`).join(', '), '']);
+  const kk = (o.kurgu || {}); if (kk.kesme) T.push(['Kurgu', `${kk.kesme} kesme`, `dakikada ${kk.dakikada}`]);
+  const iz = [z.yapay_zeka_etiketi ? 'dosyada yapay zekâ etiketi var' : '', z.c2pa ? 'dosyada içerik kimlik bilgisi var' : '', ...(z.uretici || []).map(x => `üretici izi: ${x}`), ...(z.duzenleyici || []).map(x => `düzenleyici izi: ${x}`), ...(z.kamera || []).slice(0, 1).map(x => `kamera bilgisi: ${x}`)].filter(Boolean);
+  const ayir = (s.ayrim || []).length >= 2 && (k.var && m.var);
+  return `<div class="bolum"><h2>Ses ve yazı</h2><p class="alt">Dosyadan ölçüldü. Kaynak tahminleri yalnız tahmindir.</p><div class="sesg">${T.map(([a, v, n]) => `<div><b>${esc(t(a))}</b><span>${esc(v)}</span>${n ? `<small>${esc(n)}</small>` : ''}</div>`).join('')}</div>
+    ${ayir ? `<div class="sesayir"><label>${esc(t('Yalnız konuşma'))}<audio controls preload="none" src="/content-dosya/${d.id}/is_ara/rea/stems/vocals.m4a"></audio></label><label>${esc(t('Yalnız müzik'))}<audio controls preload="none" src="/content-dosya/${d.id}/is_ara/rea/stems/music.m4a"></audio></label></div>` : ''}
+    ${iz.length ? `<p class="izler">${esc(t('Dosya izleri'))}: ${esc(iz.join(' · '))}</p>` : ''}</div>`;
 }
 document.addEventListener('timeupdate', e => { if (e.target.matches && e.target.matches('.ust video')) seritGuncelle(e.target.currentTime); }, true);
 document.addEventListener('seeked', e => { if (e.target.matches && e.target.matches('.ust video')) seritGuncelle(e.target.currentTime); }, true);
@@ -1094,6 +1174,26 @@ document.addEventListener('seeked', e => { if (e.target.matches && e.target.matc
 const KADEME = ['bilinmiyor', 'olası', 'güçlü olasılık', 'neredeyse kesin', 'kesin'];
 const KADEME_AD = {'bilinmiyor': 'Bilinmiyor', 'olası': 'Olası', 'güçlü olasılık': 'Güçlü olasılık', 'neredeyse kesin': 'Neredeyse kesin', 'kesin': 'Kesin'};
 const kisa = (s, n = 70) => { s = String(s || '').split(/\s*[(;]\s*/)[0].trim(); return s.length > n ? s.slice(0, n - 1) + '…' : s; };
+/* akımı hangi kanaldan tanıdım: görüntü, ses, konuşma, hareket, üstteki yazı; yalnız ayırt edici olanlar */
+/* aynı akımın örnekleri yan yana: ne sabit, ne bazen, ne her videoda farklı */
+function akimHtml(d){
+  const o = d.akim_kalip; if (!o || !(o.ornekler || []).length) return '';
+  const S = [['sabit', 'Herkes aynen yapıyor', o.sabit], ['bazen', 'Bazılarında var', o.bazen], ['degisen', 'Her videoda farklı', o.degisen]].filter(x => (x[2] || []).length);
+  const kap = (o.ornekler || []).map(x => ({k: ytKucuk(x.link), ...x})).filter(x => x.k).slice(0, 5);
+  return `<div class="bolum"><h2>${esc(o.akim_adi || t('Akım'))}</h2><p class="alt">${o.ornekler.length} ${esc(t('videoyla karşılaştırdım. Bir akım her videoda aynı görünmez.'))}</p>
+    ${kap.length ? `<div class="akk">${kap.map(x => `<a href="${esc(x.link)}" target="_blank" rel="noopener" title="${esc(x.baslik || '')}"><img loading="lazy" src="${esc(x.k)}" alt=""></a>`).join('')}</div>` : ''}
+    <div class="aks">${S.map(([c, ad, L]) => `<div class="${c}"><b>${esc(t(ad))}</b><ul>${L.map(m => `<li>${esc(m)}</li>`).join('')}</ul></div>`).join('')}</div>
+    ${(o.kollar || []).length ? `<div class="akkol"><h4>${esc(t('Akımın kolları'))}</h4>${o.kollar.map(k => `<p><b>${esc(k.ad)}</b> ${esc(k.ne)}${(k.linkler || [])[0] ? ` <a href="${esc(k.linkler[0])}" target="_blank" rel="noopener">↗</a>` : ''}</p>`).join('')}</div>` : ''}
+    ${o.bu_video ? `<p class="izler">${esc(t('Bu video'))}: ${esc(o.bu_video)}</p>` : ''}</div>`;
+}
+function kanalHtml(d){
+  const I = d.akim_imza || {}, B = (d.web_trend || {}).kanallar || [], AD = {goruntu: 'Görüntü', ses: 'Ses', konusma: 'Konuşma', hareket: 'Hareket ve geçiş', super: 'Üstteki yazı'}, IK = {goruntu: 'foto', ses: 'ses', konusma: 'yazi', hareket: 'kurgu', super: 'yazi'};
+  const R = ((d.akim_kalip || {}).kanallar) || {}, RAD = {sabit: 'akımın kendisi', bazen: 'bazılarında', degisen: 'bu videoya özgü'};
+  const K = Object.keys(AD).filter(k => (I[k] || {}).ne);
+  if (!K.length) return '';
+  return `<div class="kkanal"><h4>${esc(t('Akımı ele veren izler'))}</h4>${K.map(k => { const b = B.find(x => x.kanal === k);
+    return `<div class="kkz ${b ? 'var' : ''}"><b>${svg(IK[k])}${esc(t(AD[k]))}${R[k] ? `<span>${esc(t(RAD[R[k]]))}</span>` : I.en_guclu === k ? `<span>${esc(t('En ayırt edici'))}</span>` : ''}</b><p>${esc(I[k].ne)}</p>${b ? `<p class="bul">${esc(b.bulgu)}${b.link ? ` <a href="${esc(b.link)}" target="_blank" rel="noopener">↗</a>` : ''}</p>` : ''}</div>`; }).join('')}</div>`;
+}
 function kanitHtml(d, y){
   const sk = d.sayfa_kaniti || {}, de = d.dosya_etiketleri || {}, S = (d.tarif || {}).sahneler || [];
   const sablon = (sk.baglantilar || []).find(b => b.sablon_id || /capcut|template|şablon/i.test(`${b.ad || ''} ${b.link || ''}`));
@@ -1109,6 +1209,7 @@ function kanitHtml(d, y){
     ['kurgu', 'Benzer videolar', !!bz.length, bz.length ? `${bz.length} video karşılaştırdım${enIyi && enIyi.ses >= .75 ? '; biri aynı sesi taşıyor' : ''}` : 'Karşılaştırılacak video yok'],
     ['film', 'Orijinal an', !!(kk.olasi && kk.ne), kk.olasi && kk.ne ? kisa(kk.ne) : 'Yok ya da bulunamadı'],
   ];
+  const ol = d.olcum; if (ol) T.splice(1, 0, ['kamera', 'Piksel ölçümü', true, `${(ol.sahneler || []).length} çekim ölçtüm`]);
   if (d.yorum_sayisi) T.push(['sohbet', 'Yorumlar', true, `${d.yorum_sayisi} yorum okudum`]);
   let kd = KADEME.indexOf(y.kademe); if (kd < 0) kd = {yuksek: 4, orta: 2, dusuk: 1}[y.guven] ?? 1;
   if (d.kullanici_duzeltmesi) kd = 4;
@@ -1116,7 +1217,7 @@ function kanitHtml(d, y){
   return `<div class="bolum"><h2>Kanıtlar</h2><p class="alt">Bu sonuca nereye bakarak vardım.</p><div class="gz kanit">
     <div class="gosterge"><svg viewBox="0 0 170 100"><path class="yay" d="M13 92a72 72 0 0 1 144 0"/><path class="dolu" d="M13 92a72 72 0 0 1 144 0" stroke-dasharray="${L}" stroke-dashoffset="${L}" data-off="${(L * (1 - oran)).toFixed(1)}"/></svg>
       <b>${esc(d.kullanici_duzeltmesi ? 'Düzeltmenize göre' : KADEME_AD[KADEME[kd]])}</b><small>${kd >= 3 ? 'Kesin kanıta dayanıyor' : kd === 2 ? 'Güçlü ipuçları var' : 'En olası yol'}</small></div>
-    <div class="kgrid">${T.map(([ik, ad, var_, ne], i) => `<div class="kt ${var_ ? 'var' : 'yok'}" style="--i:${i}"><b>${ik === 'sohbet' ? IK_SOHBET : svg(ik)}${esc(ad)}</b><p>${esc(ne)}</p></div>`).join('')}</div></div></div>`;
+    <div class="kgrid">${T.map(([ik, ad, var_, ne], i) => `<div class="kt ${var_ ? 'var' : 'yok'}" style="--i:${i}"><b>${ik === 'sohbet' ? IK_SOHBET : svg(ik)}${esc(ad)}</b><p>${esc(ne)}</p></div>`).join('')}</div></div>${kanalHtml(d)}</div>`;
 }
 /* görünür olunca: yay dolar, karolar sırayla yanar, şerit çizgisi yerini bulur */
 const gozcu = 'IntersectionObserver' in window ? new IntersectionObserver(es => es.forEach(e => { if (!e.isIntersecting) return;
@@ -1289,6 +1390,7 @@ $('#isSayfa').addEventListener('click', async e => {
     const y0 = window.scrollY; isCiz(); window.scrollTo(0, y0); return;
   }
   const g = el.dataset.g;
+  if (g === 'istem'){ kopyala(el.dataset.m); return; }
   if (g === 'sor') sohbetAc();
   else if (g === 'odak') odakAc();
   else if (g === 'rehberKopyala') kopyala(rehberMetni(D.yontem), 'Rehber kopyalandı.');

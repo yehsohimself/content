@@ -63,12 +63,19 @@ def baglam(d):
         p.append("PLATFORM SAYFASI: " + _kisa(d["sayfa_kaniti"], 3000))
     if d.get("sarki"):
         p.append("ŞARKI: " + _kisa(d["sarki"], 600))
+    if d.get("akim_imza"):
+        import content_akim
+        p.append("AKIMI ELE VEREN İZLER (kanal kanal): " + content_akim.metin(d["akim_imza"]) + "\nAKIMIN KALIBI: " + content_akim.kalip_metni(d.get("akim_kalip")))
     if d.get("web_trend"):
         p.append("WEB'DE AKIM: " + _kisa(d["web_trend"], 2000))
     if d.get("benzerler"):
         p.append("BENZER VİDEOLAR (ses/görüntü benzerliği): " + _kisa([{x: b.get(x) for x in ("baslik", "ses", "gorsel", "link")} for b in d["benzerler"][:6]], 1500))
     if d.get("ogreticiler"):
         p.append("ÖĞRETİCİ VİDEOLAR: " + _kisa([{x: o.get(x) for x in ("baslik", "link")} for o in d["ogreticiler"][:4] if isinstance(o, dict)], 1200))
+    if d.get("olcum"):
+        import content_olcum
+        p.append("SAHNE ÖLÇÜMÜ (çekim çekim gerçek/yapay zekâ/şablon, ses, dosya izleri; yeniden yazılan istemler videonun gerçek istemi değildir): " + content_olcum.istem_metni(d["olcum"]) + "\nİstemler: "
+                 + _kisa([{"bas": s["bas"], "istem": s["istem_en"]} for s in d["olcum"]["sahneler"] if s.get("istem_en")][:12], 2500))
     if y:
         p.append("SENİN YAZDIĞIN REHBER: " + _kisa({x: y.get(x) for x in ("baslik", "ozet", "yontem", "guven", "kademe", "kanit", "araclar", "sablon", "kaynak_klip",
                                                                        "degisen_katmanlar", "gerekenler", "adimlar", "sik_hatalar", "emin_olmadiklarim",

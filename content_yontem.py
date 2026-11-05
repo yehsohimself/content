@@ -10,6 +10,7 @@ coz(cid): content.cozumle'nin çıkardığı tarif (sahneler, ses yazısı, ekra
 import html
 import json
 import re
+import threading
 from pathlib import Path
 
 import claude_yaz
@@ -17,7 +18,9 @@ import content as C
 import content_araclar as A
 import content_dogrulama as D
 import content_benzer as B
+import content_akim as AK
 import content_kanit as K
+import content_olcum as O
 
 ISTEM = """Bir video yapım uzmanısın. Aşağıdaki viral videonun NASIL YAPILDIĞINI çözeceksin ve bunu hiç video düzenlememiş birine
 (101 seviyesi) adım adım anlatacaksın. Kullanıcı programlama bilmez; sade Türkçe, "siz" dili.
@@ -36,11 +39,17 @@ Ekrandaki yazılar: {yazilar}
 Dosya etiketleri (platformun indirdiği dosya; üretici uygulamanın izi çoğu zaman silinmiştir): {dosya}
 
 ŞARKI (sırayla: platformun kendi şarkı bilgisi, sesten tanıma (Shazam), sözlerden tahmin; 'kaynak' alanı hangisi olduğunu söyler): {sarki}
-WEB'DE AKIM (şarkı adı ve TikTok'un önerdiği aramalarla açık web araması; sayfaların söyledikleri, kaynaklarıyla. Akımın adı ve canlandırdığı gerçek an
+AKIM İMZASI (videonun akımı ele verebilecek izleri, kanal kanal; görüntü, ses, konuşma, hareket/geçiş ya da üstteki yazı. Bir kanal tek başına akımı belli edebilir, yalnız şarkıya bakma): {imza}
+AKIMIN KALIBI (aynı akımın başka örnekleriyle karşılaştırıldı; akımlar çeşitlenir). Rehberi buna göre kur: SABİT olanı aynen yaptır; HER VİDEODA FARKLI olanı "burayı kendiniz yazın/koyun" diye anlat, bu videonun sözünü ya da sesini akımın kuralı sanma; BAZEN olanı isteğe bağlı diye söyle; kollar varsa hangisini seçebileceğini söyle: {kalip}
+WEB'DE AKIM (bu izlerle ve şarkı adıyla açık web araması; sayfaların söyledikleri, kaynaklarıyla. Akımın adı ve canlandırdığı gerçek an
 için GÜÇLÜ kanıttır; satış sayfaları araç adını abartabilir. Bu video o akımın bir çeşitlemesi olabilir, sayfalar bu videoyu anlatmaz): {web}
 REPLİKLERİN KAYNAĞI (konuşmanın parçaları web'de arandı; bulunduysa SESİN geldiği film/dizi): {replik}
 ÖLÇÜLEN İZLER (videodan kodla ölçüldü: çekim süreleri, boyut, kare hızı, kesmesiz uzun plan; araç adı için yalnız İPUCUDUR, tek başına 'olası'dan
 güçlü olamaz; filigran ya da sayfa bilgisiyle örtüşürse güçlenir): {olcum}
+SAHNE ÖLÇÜMÜ (çekim çekim: bir ölçüm aracı pikselleri ölçtü, sonra her çekime gözle bakıldı. GERÇEK ÇEKİM / YAPAY ZEKÂ / ŞABLON ayrımında güçlü kanıttır; 'ölçüm ile göz çelişiyor'
+işaretli çekimde kendin karar ver. Hangi aracın kullanıldığını SÖYLEMEZ. Video karışıksa rehberi çekim türlerine göre kur: gerçek çekimler için nasıl çekileceğini, yapay zekâ çekimleri
+için nasıl üretileceğini, hareketli grafikler için nasıl yapılacağını ayrı adımlarda anlat; 'hepsi yapay zekâ' ya da 'hepsi gerçek' diye genelleme):
+{sahne_olcum}
 ARAÇ TANIMA DEFTERİ (her aracın videoda bıraktığı izler; filigranı karelerde bu tariflere göre ara, süre ve boyutu ölçülen izlerle karşılaştır):
 {defter}
 KÜTÜPHANEDE AYNI SES (kullanıcının daha önce çözdürdüğü, AYNI sesi taşıyan videolar; aynı ses çoğu zaman aynı akım demektir): {kutuphane}
@@ -66,6 +75,7 @@ GEÇMİŞ HATALARDAN DERSLER (kullanıcının başka videolarda düzelttiği hat
 
 BUGÜNKÜ YAPAY ZEKÂ VİDEO MODELLERİ (sunra.ai kataloğu; yalnız bir yol önerirken GÜNCEL ad ve yeteneği doğru yazmak için başvuru;
 bu videoda hangisinin kullanıldığına KANIT DEĞİL, kanıt yoksa adı 'örneğin' diye ver): {modeller}
+MODELLERİN SINIRLARI (tek üretimde süre, ne yapabildiği; tarihli tablo; hangi aracı önereceğini seçmek için, kullanıldığının kanıtı DEĞİL): {sinirlar}
 
 İPUÇLARI: Açıklamada/etiketlerde "CapCut", "template", "şablon", "#capcuttemplate", "Use template" geçmesi, ekranda CapCut filigranı, birebir
 aynı kurgunun binlerce videoda tekrarı → CapCut şablonu. Yüz/kişinin başka bir sahneye konması, yapay zekâ tarzı akıcı ama tuhaf hareket,
@@ -132,6 +142,7 @@ JSON döndür:
  "zorluk": "kolay | orta | zor",
  "sik_hatalar": ["en çok 3"],
  "sizin_icin": "kullanıcının notuna (varsa) göre nasıl uyarlanır; not yoksa boş",
+ "cekim_karari": [{{"no": 1, "tur": "live_action|ai_video|avatar|cg_3d|anim_2d|stop_motion|code_render|screen_capture|still_motion|static_hold", "neden": "tek cümle, Türkçe, hangi kanıt", "guven": "yuksek|orta", "istem_en": "çekim yapay zekâ ise onu üretecek İngilizce istem; değilse boş"}}] (YALNIZ SAHNE ÖLÇÜMÜ'nde yanlış ya da çelişkili bulduğun çekimler; doğruysa yazma; tüm kanıtların sana verdiği bilgiyi kullan, ör. web'deki akım, platform etiketi, öğretici, tanınan gerçek üretici. Çekimlerin tamamı yanlışsa tek kayıt yeter: "no": "hepsi". Ölçüm gerçek bir videoya hareket bulanıklığı yüzünden yapay zekâ demiş olabilir: bunu düzelt),
  "emin_olmadiklarim": ["kesin bilmediğin noktalar; uydurma yapma"],
  "degisen_katmanlar": {{"kaynak": "video | fotograf | yapay (sıfırdan üretilmiş) | ekran_kaydi", "kisiler": "aynen | degistirilmis | eklenmis | yok", "ses": "ozgun (görüntünün kendi sesi) | sarki | dublaj (görüntüye sonradan konuşma/ses) | sessiz", "ortam": "aynen | degistirilmis | yapay", "hareket": "ozgun | aktarilmis (başka bir anın hareketi) | durağan", "ozet": "tek cümle: bu videoda ne değiştirilmiş, ne aynen kalmış"}},
  "kaynak_klip": {{"olasi": true, "ne": "orijinal an, ör. 'Mesut Özil'in Ludogorets'e attığı gol' ya da boş", "neden": "kısa", "eylem": "videodaki ana fiziksel hareketin İngilizce kısa adı; HER ZAMAN doldur (olasi false olsa da)", "arama": ["YouTube'da orijinal anı bulacak 1-2 arama (harekete göre)"]}},
@@ -560,6 +571,11 @@ def coz(cid):
     C.guncelle(cid, durum="planlaniyor", adim="Yapılış yöntemi çözülüyor")
     C.log(cid, "Yapılış yöntemi çözülüyor")
     sakla = bool(d.get("kanit_sakla"))
+    olcum = {"o": d.get("olcum")}
+    ol_is = None
+    if not (olcum["o"] or {}).get("gozle") and O.hazir():      # ölçüm ayrı süreçte, kanıt toplama sürerken arkada çalışır
+        ol_is = threading.Thread(target=lambda: olcum.update(o=O.calistir(cid)), daemon=True)
+        ol_is.start()
     aciklama = "" if sakla else (k.get("aciklama") or "")      # deneme: açıklama, başlık, platform sayfası, yorumlar ve dosya etiketi gizli (content_test)
     try:
         if sakla:
@@ -594,13 +610,22 @@ def coz(cid):
             if sarki:
                 sarki["kaynak"] = "sözlerden tahmin"
     C.log(cid, f"Şarkı: {sarki.get('sarki')} ({sarki.get('kaynak')}); akım web'de aranıyor" if sarki else "Şarkı bulunamadı; akım web'de aranıyor")
+    try:
+        izg = K.izgaralar(cid)
+    except Exception as e:  # noqa: BLE001
+        print(f"[content {cid}] ızgara çıkarılamadı: {e}", flush=True)
+        izg = []
+    C.log(cid, "Akımı ele verebilecek izlere bakılıyor: görüntü, ses, konuşma, hareket, üstteki yazı")
+    imza = AK.imza(cid, izg or _kareler(cid, 16), sarki, "" if sakla else aciklama[-300:])
+    if imza.get("en_guclu"):
+        C.log(cid, f"En ayırt edici iz: {AK.KANAL_AD[imza['en_guclu']].lower()}. {imza[imza['en_guclu']]['ne']}"[:200])
     if sakla:
         t = dict(t, ozet="")                    # ilk inceleme özeti açıklamayı görmüş olabilir
     bilinen = " / ".join(x for x in [k.get("baslik"), (sayfa.get("aciklama") or aciklama)[:300], (t.get("ozet") or "")[:300],
                                      "yapay zekâ etiketi var" if (sayfa.get("yapay_zeka_etiketi") or sayfa.get("yapay_zeka_etiket_turu")) else ""] if x)
     try:
         with claude_yaz.iz(lambda o: C.log(cid, o["m"])):
-            web = K.web_trend(sarki, sayfa.get("tiktok_onerilen_aramalar") or [], bilinen=bilinen, dil=d.get("dil") or "tr")
+            web = K.web_trend(sarki, sayfa.get("tiktok_onerilen_aramalar") or [], bilinen=bilinen, dil=d.get("dil") or "tr", imza=imza)
     except Exception as e:  # noqa: BLE001
         print(f"[content {cid}] web araması yapılamadı: {e}", flush=True)
         web = {}
@@ -625,9 +650,24 @@ def coz(cid):
         print(f"[content {cid}] benzer video karşılaştırması yapılamadı: {e}", flush=True)
     if benzerler:
         C.log(cid, f"{len(benzerler)} benzer video karşılaştırıldı; en yakını: {benzerler[0]['yorum']}")
+    kalip = {}
+    if benzerler:
+        C.log(cid, "Aynı akımın örnekleri yan yana konuyor: ne sabit, ne değişiyor")
+        kalip = AK.kalip(cid, benzerler, imza, sarki)
+        if kalip.get("sabit"):
+            C.log(cid, f"Akımda sabit olan: {kalip['sabit'][0]}"[:200])
+        if not web and kalip.get("akim_adi") and kalip.get("ornekler"):      # akımın adı örneklerden öğrenildi: web bir kez de bu adla aranır
+            try:
+                with claude_yaz.iz(lambda o: C.log(cid, o["m"])):
+                    web = K.web_trend(sarki, [kalip["akim_adi"]], bilinen=bilinen + " / " + AK.kalip_metni(kalip), dil=d.get("dil") or "tr", imza=imza)
+            except Exception as e:  # noqa: BLE001
+                print(f"[content {cid}] akım adıyla web araması yapılamadı: {e}", flush=True)
     C.guncelle(cid, sayfa_kaniti=sayfa, yorumlar=yorum, dosya_etiketleri=dosya, kutuphane_eslesme=kutup, sarki=sarki, web_trend=web, replik=replik,
                benzerler=[{a: b.get(a) for a in ("link", "baslik", "kanal", "sure", "ses", "gorsel", "gorsel_en", "yorum")} for b in benzerler], ozgun_ses=ozgun)
     seritler = [b["serit"] for b in benzerler if b.get("serit")][:2]
+    if ol_is:
+        ol_is.join(timeout=1200)
+    sahne_metin = O.istem_metni(olcum["o"])
     istem = ISTEM.format(
         sayfa=json.dumps(sayfa, ensure_ascii=False)[:2400] if sayfa else "(yok)",
         dosya=json.dumps(dosya, ensure_ascii=False)[:400] if dosya else "(yok)",
@@ -644,23 +684,19 @@ def coz(cid):
         sure=float(k.get("sure") or 0), w=k.get("w") or 0, h=k.get("h") or 0,
         sahneler=", ".join(f"{s['no']}: {s['bas']:.1f}-{s['bit']:.1f} sn {s.get('aciklama') or ''}" for s in t.get("sahneler") or [])[:2500],
         ses=(t.get("ses_yazisi") or "(konuşma yok)")[:1500],
-        yazilar="; ".join(f"{y['sn']:.1f} sn: {y['metin']}" for y in t.get("yazilar") or [])[:1200] or "(yok)",
+        yazilar="; ".join(f"{y['sn']:.1f} sn: {y['metin']}" for y in C.gercek_yazilar(t))[:1200] or "(yok)", imza=AK.metin(imza), kalip=AK.kalip_metni(kalip),
         ozet=(t.get("ozet") or "")[:600], istek=(d.get("istek") or "").strip() or "(yok)",
-        olcum="\n".join(A.olc(d)) or "(ölçülemedi)", defter=A.defter_metni(),
+        olcum="\n".join(A.olc(d)) or "(ölçülemedi)", sahne_olcum=sahne_metin, sinirlar=O.model_tablosu()[:3500] or "(yok)", defter=A.defter_metni(),
         duzeltme=(d.get("kullanici_duzeltmesi") or "").strip() or "(yok)", dersler=D.dersler_blogu(haric=d.get("test_kaynak")))
     if d.get("dil") == "en":
         istem += DIL_EN
-    try:
-        izg = K.izgaralar(cid)
-    except Exception as e:  # noqa: BLE001
-        print(f"[content {cid}] ızgara çıkarılamadı: {e}", flush=True)
-        izg = []
     goruntu = (izg or _kareler(cid, 16)) + [Path(x) for x in seritler]
     y = claude_yaz.json_coz(claude_yaz.sor_gorsel(istem, [str(x) for x in goruntu + uc], model_adi="opus"))
     if not y or not y.get("adimlar"):
         raise RuntimeError("Yapılış yöntemi çıkarılamadı (yanıt okunamadı).")
     C.log(cid, "Bu videoyu anlatan öğretici videolar aranıyor")
     sorgular = [q for q in (y.get("ogretici_aramalari") or []) if isinstance(q, str)][:3]
+    sorgular += [f"{q} nasıl yapılır" for q in AK.aramalar(imza, 2)]
     if (sayfa.get("baglantilar") or [{}])[0].get("sablon", {}).get("ad"):
         sorgular.insert(0, f"{sayfa['baglantilar'][0]['sablon']['ad']} capcut template tutorial")
     kk = y.get("kaynak_klip") or {}
@@ -690,7 +726,7 @@ def coz(cid):
     C.log(cid, f"{len(ogr)} öğretici video bulundu; adımlar doğruluk için denetleniyor" if ogr else "Öğretici video bulunamadı; adımlar doğruluk için denetleniyor")
     ogr_metin = "\n\n".join(f"[{o['baslik']}] {o['link']} ({o['kanal']}, {o['sure']} sn)\nAçıklama: {o['aciklama'][:900]}\nKonuşma: {o['metin'][:3500]}"
                               for o in ogr) or "(bulunamadı)"
-    kanit = istem[istem.find("SAYFA KANITI"):istem.find("Ekte videodan")][:9000]
+    kanit = istem[istem.find("SAYFA KANITI"):istem.find("Ekte videodan")][:9000] + "\nSAHNE ÖLÇÜMÜ: " + sahne_metin
     if d.get("kullanici_duzeltmesi"):
         kanit += f"\nKULLANICININ DÜZELTMESİ (bu videonun gerçeği; kesin kabul et): {d['kullanici_duzeltmesi']}"
     kanit += f"\nGEÇMİŞ HATALARDAN DERSLER: {D.dersler_blogu(haric=d.get('test_kaynak'))}"
@@ -704,6 +740,7 @@ def coz(cid):
                                                                       taslak=json.dumps(y, ensure_ascii=False)) + (DIL_EN if d.get("dil") == "en" else ""),
                                                        [str(x) for x in (izg[:6] or _kareler(cid, 8)) + uc] + seritler[:1] + [a["kucuk"] for a in kucukler], model_adi="opus"))
         if y2 and y2.get("adimlar"):
+            y2.setdefault("cekim_karari", y.get("cekim_karari"))
             y = y2
     except Exception as e:  # noqa: BLE001
         print(f"[content {cid}] denetim yapılamadı: {e}", flush=True)
@@ -714,6 +751,7 @@ def coz(cid):
     if replik.get("kaynaklar"):
         y["web_kaynaklar"] = (y.get("web_kaynaklar") or []) + [dict(k, ne=f"Konuşmanın kaynağı ({replik.get('eser')}): {k.get('ne') or ''}".strip(": "))
                                                                   for k in replik["kaynaklar"]]
+    O.karar_uygula(cid, y)
     y["zaman"] = time.time()
     C.guncelle(cid, yontem=y, durum="yontem", adim="Rehber hazır")
     C.log(cid, "Rehber hazır")

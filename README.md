@@ -32,7 +32,9 @@ A few minutes later:
   photo or footage to prepare.
 - **Step by step:** numbered steps with the real menu names, written for someone who has never opened the app. Tick them off as you go.
 - **If you get stuck:** the mistakes people usually make with this kind of video.
-- **What happens in the video, scene by scene,** and the original moment if the trend remixes a real clip.
+- **A map of the video, shot by shot:** real footage, AI video, motion graphics, screen recording, panning photo or still; why, and how sure. For AI shots, a prompt that would produce the same shot (rewritten from the picture, clearly not the original prompt). For real shots, how it was filmed.
+- **What is fixed and what is yours in this trend:** it finds other videos of the same trend and lays them side by side. In one trend everyone says something different and only the look is the trend; in another the sound is. It tells you what everyone does, what only some do, what is different in every video, and the trend's branches, so you copy the right part.
+- **Sound and text:** speech or singing, tempo and key, sound effects, whether cuts land on the beat, on-screen text; listen to voice and music separately.
 - **"Do it for me":** if the steps can be done on a Mac, a ready prompt to give Claude so it can carry them out with computer use.
 - **"Was I right?":** tell it what it got wrong. It rewrites the guide with your correction and keeps a short lesson so the next analysis
   does better.
@@ -49,8 +51,11 @@ Content does not look at a few frames and guess. It stacks evidence from the str
 4. **The file itself:** watermarks and end cards in the first and last frames, file tags, resolution, frame rate and clip lengths that match
    known AI tools (Veo's 8-second shots, Sora's odd sizes...).
 5. **The pictures:** every cut is detected and each scene is sampled densely, so motion is visible, not just a still.
-6. *(optional)* **Comments,** where people ask "what app is this?" and the creator sometimes answers.
-7. *(optional)* **The song,** recognised from the audio with Shazam.
+6. **Five channels, not just the song:** a trend can be given away by the picture, a sound, the words, a motion or transition, or the on-screen text. Each gets its own searches, then the examples found are compared.
+7. *(optional)* **Comments,** where people ask "what app is this?" and the creator sometimes answers.
+8. *(optional)* **The song,** recognised from the audio with Shazam.
+
+Shots are measured on your Mac with [rea-video](https://github.com/JuneYaooo/rea-video) (Apache-2.0): cuts, frozen frames, panning photos, tempo, key, voice and music separation. Claude then looks at every shot. In our test set the pixel measurements alone called real, platform-recompressed footage AI most of the time, so real versus AI is decided by looking, and measurement decides what it can truly measure.
 
 A second pass then checks the draft against the evidence: tools without proof are downgraded, menu names it is not sure of are made
 general, missing steps are added. What it could not find is listed as such.
@@ -69,12 +74,12 @@ cd content
 ```
 
 Open http://127.0.0.1:8769. Next time, double-click `Content.command`. The install script adds `ffmpeg`, `deno` and `uv` with Homebrew
-and creates `.venv` with the Python packages. The speech model (~1.6 GB) downloads the first time a video has speech.
+and creates `.venv` with the Python packages and `.venv-rea` for shot measurement (pinned to a reviewed commit; a ~67 MB voice separation model downloads on first use). The speech model (~1.6 GB) downloads the first time a video has speech.
 For song recognition, run `./kurulum.sh --shazam` once and turn it on in Settings (the gear in the top bar).
 
 ## Where your data goes
 
-- **Stays on your Mac:** the downloaded video, frames, speech-to-text (mlx-whisper), on-screen text (Apple Vision), all results and your
+- **Stays on your Mac:** the downloaded video, frames, shot measurements, separated voice and music, speech-to-text (mlx-whisper), on-screen text (Apple Vision), all results and your
   corrections (in `content/`).
 - **Sent to Claude, through your own account:** the frames, the transcript of the speech, the video's public description and the evidence
   above, to write the analysis. Claude may search the web for the trend.
@@ -89,6 +94,7 @@ to your network.
 ## Known limits
 
 - It explains how a video was made; it does not make the video for you.
+- Shot measurement takes 2 to 5 times the video's length and is skipped above 5 minutes. Prompts for AI shots are reconstructions, and a real video can still be misjudged; "Was I right?" fixes it.
 - If a video carries no trace (no template link, no watermark, no one explaining it), the exact AI model behind it often cannot be known.
   Content will say "best guess" and tell you why.
 - Instagram shows less than TikTok: no template links on the page, so Instagram results lean more on tutorials and pictures.

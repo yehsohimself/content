@@ -13,20 +13,20 @@ DEFTER = [
      "filigran": "Gemini uygulamasında sağ altta küçük 'Veo' yazısı; Flow ve API çıktılarında görünür filigran yok (görünmez SynthID var)",
      "kare": "24 kare/sn", "ses": "yerleşik ses, ortam sesi ve dudakla uyumlu konuşma",
      "isaret": "çekimler çoğu zaman tam 8 sn; uzatma ile birleştirilmiş klipler 8 sn'nin katları"},
-    {"ad": "Sora 2 (OpenAI)", "sureler": [10.0, 15.0], "en_uzun": 25.0, "boyut": [(704, 1280), (1280, 704)],
+    {"ad": "Sora 2 (OpenAI)", "sureler": [10.0, 15.0, 20.0], "en_uzun": 25.0, "boyut": [(704, 1280), (1280, 704)],
      "filigran": "bulut simgesi ve 'Sora' yazısı; video boyunca köşeden köşeye yer değiştirir",
      "kare": "30 kare/sn", "ses": "yerleşik ses ve konuşma; 'cameo' ile gerçek kişilerin yüzü ve sesi",
      "isaret": "704x1280 ya da 1280x704 gibi standart dışı boyut; kurgulanmış videoda tek klip 10-15 sn"},
-    {"ad": "Kling (Kuaishou)", "sureler": [5.0, 10.0], "en_uzun": 10.0,
+    {"ad": "Kling (Kuaishou)", "sureler": [5.0, 10.0, 15.0], "en_uzun": 30.0,
      "filigran": "ücretsiz sürümde sağ altta 'Kling AI' logosu",
      "kare": "24 ya da 30 kare/sn", "ses": "yeni sürümlerde isteğe bağlı ses",
-     "isaret": "Motion Control ile referans videodan hareket aktarma; çekimler 5 ya da 10 sn"},
+     "isaret": "Motion Control ile referans videodan hareket aktarma; çekimler 5, 10 ya da 15 sn; Kling 4.0 en çok 30 sn"},
     {"ad": "Hailuo (MiniMax)", "sureler": [6.0, 10.0], "en_uzun": 10.0,
      "filigran": "ücretsiz sürümde 'Hailuo AI' yazısı", "kare": "24-25 kare/sn", "ses": "sessiz ya da sonradan eklenmiş",
      "isaret": "çekimler 6 ya da 10 sn"},
-    {"ad": "Seedance (ByteDance; CapCut ve Dreamina içinde)", "sureler": [5.0, 10.0], "en_uzun": 15.0,
+    {"ad": "Seedance (ByteDance; CapCut ve Dreamina içinde)", "sureler": [5.0, 10.0, 15.0], "en_uzun": 30.0,
      "filigran": "Dreamina ya da CapCut logosu veya 'AI generated' notu", "kare": "24 kare/sn", "ses": "2.0 sürümünde ses ve dudak uyumu",
-     "isaret": "CapCut AI Lab ve Dreamina'daki yapay zekâ video özelliklerinin modeli; çoklu referansla karakter tutarlılığı"},
+     "isaret": "CapCut AI Lab ve Dreamina'daki yapay zekâ video özelliklerinin modeli; çoklu referansla karakter tutarlılığı; 2.5 sürümü tek üretimde birkaç çekim (en çok 30 sn), yani kesmeler artık ayrı klip demek değil"},
     {"ad": "Runway (Gen-4, Aleph, Act-Two)", "sureler": [5.0, 10.0], "en_uzun": 10.0,
      "filigran": "ücretsiz sürümde 'Runway' yazısı", "kare": "24 kare/sn", "ses": "sessiz",
      "isaret": "Aleph var olan bir videonun görünümünü değiştirir; Act-Two bir oyuncunun hareketini karaktere aktarır"},
@@ -52,7 +52,7 @@ DEFTER = [
 ]
 
 TOLERANS = 0.3            # sn; çekim süresi ölçüsü sahne tespitinin payıyla
-UZUN_TEK_PLAN = 20.0      # sn; çoğu araç tek seferde 5-15 sn üretir
+UZUN_TEK_PLAN = 30.0      # sn; Seedance 2.5 ve Kling 4.0 tek seferde 30 sn'ye çıktı (rea-video tablosu, 2026-10-29); 15-20 sn'lik tek plan artık kanıt değil
 
 
 def defter_metni():
@@ -83,7 +83,7 @@ def olc(d):
             out.append(f"{len(tam)} çekim tam {s_:g} sn: {', '.join(adlar)} tek seferde bu sürede klip üretir; "
                        + ("çok yaygın bir süre, zayıf ipucu." if ortak else "olası ipucu (kesilmiş klipler bu ölçüyü bozar)."))
     if sah and max(sah) >= UZUN_TEK_PLAN:
-        out.append(f"{max(sah):.1f} sn kesmesiz bir plan var. Yapay zekâ araçlarının çoğu tek seferde 5-15 sn üretir; bu uzunlukta tek plan "
+        out.append(f"{max(sah):.1f} sn kesmesiz bir plan var. Yapay zekâ araçlarının çoğu tek seferde 5-15 sn, en uzunları 30 sn üretir; bu uzunlukta tek plan "
                    "baştan üretilmiş tek bir klipten çok gerçek bir çekim ya da VAR OLAN bir videonun dönüştürülmesi (hareket aktarma, "
                    "yüz/karakter değiştirme, görünüm değiştirme) olabilir.")
     elif len(sah) == 1 and 4 <= sure <= 16:

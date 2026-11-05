@@ -13,6 +13,9 @@ echo "2/3 Python environment (.venv) and packages"
 uv pip install --python .venv/bin/python -r requirements.txt
 if [ "$1" = "--shazam" ]; then uv pip install --python .venv/bin/python "shazamio>=0.9"; fi
 mkdir -p content kayitlar
+# Shot-by-shot measurement (rea-video, Apache-2.0): its own environment, pinned to a reviewed commit. Runs on this Mac.
+[ -d .venv-rea ] || uv venv .venv-rea --python 3.12
+uv pip install --python .venv-rea/bin/python "rea-video[ocr] @ git+https://github.com/JuneYaooo/rea-video@c301526ff2b324f8cb9238d8bec19f2d86b3b297"
 
 echo "3/3 Claude"
 if command -v claude >/dev/null || ls "$HOME/.local/bin/claude" >/dev/null 2>&1 || ls "$HOME/Library/Application Support/Claude/claude-code" >/dev/null 2>&1; then

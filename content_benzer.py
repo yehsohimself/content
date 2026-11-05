@@ -10,6 +10,7 @@ kopyalar yan yana konunca SABİT olan (şablon/akım: ses, hareket, kurgu) ile D
   768 boyut, kosinüs; aynı video 1,00, aynı kompozisyon ~0,8, farklı ~0,3). Model indirilmez, bulut yok.
 - yan yana kare şeridi (üst: bu video, alt: benzer video; zaman yüzdesine göre hizalı) Claude'a "ortak olan ne, değişen ne" diye gösterilir.
 """
+import content_akim as A
 import json
 import re
 import subprocess
@@ -157,9 +158,10 @@ def _ara(sorgu, gor, en_sure=120):
 
 
 def adaylar(d, sarki=None, web=None, sayfa=None, en_cok=EN_COK):
-    """Benzer kısa video adayları: şarkı adı, akım adı, şablon adı, TikTok'un önerdiği aramalar, başlığın ilk sözcükleri."""
+    """Benzer kısa video adayları: akım imzasının kanal kanal aramaları, şarkı adı, akım adı, şablon adı, TikTok'un önerdiği aramalar, başlığın ilk sözcükleri."""
+    imza = d.get("akim_imza") or {}
     sayfa, web, sarki = sayfa or {}, web or {}, sarki or {}
-    sorgular = []
+    sorgular = [f"{q} #shorts" for q in A.aramalar(imza, 3)]
     sad = re.sub(r"\s*[\(\[].*?[\)\]]", "", str(sarki.get("sarki") or "")).strip()
     if sad and sad.lower() not in ("original sound", "som original", "nothing"):
         sorgular += [f"{sad} tiktok #shorts", f"{sad} trend"]
@@ -169,7 +171,7 @@ def adaylar(d, sarki=None, web=None, sayfa=None, en_cok=EN_COK):
         ad = ((b.get("sablon") or {}).get("ad") or "").strip()
         if ad:
             sorgular.append(f"{ad} capcut template")
-    sorgular += [f"{w} #shorts" for w in (sayfa.get("tiktok_onerilen_aramalar") or [])[:2]]
+    sorgular += [f"{w} #shorts" for w in (sayfa.get("tiktok_onerilen_aramalar") or [])[:2] if len(w.split()) >= 2 or not imza]     # tek sözcük ("hamam") yanlış yere götürüyordu
     baslik = ((d.get("kaynak") or {}).get("baslik") or "").strip()
     if baslik and baslik != "(gizli)":
         sorgular.append(" ".join(re.findall(r"\w+", baslik)[:6]) + " #shorts")
@@ -178,11 +180,11 @@ def adaylar(d, sarki=None, web=None, sayfa=None, en_cok=EN_COK):
     if m:
         gor.add(m.group(1))
     out = []
-    for q in list(dict.fromkeys(q for q in sorgular if q.strip()))[:4]:
+    for q in list(dict.fromkeys(q for q in sorgular if q.strip()))[:5]:
         out += _ara(q, gor)
-        if len(out) >= en_cok * 2:
+        if len(out) >= en_cok * 3:
             break
-    return out[:en_cok]
+    return A.suz(out, imza)[:en_cok]
 
 
 def _indir(aday, klasor):
